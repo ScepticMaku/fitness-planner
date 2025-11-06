@@ -26,10 +26,12 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Show({ template }: any) {
+export default function Show({ userHasPlan, template }: any) {
 
     const { auth } = usePage().props as any;
     const userId = auth.user.id;
+    const userRole = auth.roles;
+    const hasPlan = userHasPlan.filter(plan => plan.user_id == userId);
 
     const { data } = useForm({
         title: template.title,
@@ -55,12 +57,19 @@ export default function Show({ template }: any) {
     };
 
     const { delete: destroy } = useForm();
+    const { post } = useForm();
     const guidelinesArray = getGuidelinesArray();
     const workoutsArray = getWorkoutsArray();
 
     const handleDelete = (id: number, label: string) => {
         if (confirm(`Do you want to delete template ${label}?`)) {
             destroy(route('plan-templates.destroy', id));
+        }
+    }
+
+    const selectPlan = (id: number) => {
+        if (confirm('Do you want to select this plan?')) {
+            post(route('user-has-plans.select', id));
         }
     }
 
@@ -75,6 +84,11 @@ export default function Show({ template }: any) {
                     {template.user_id == userId && (
                         <div>
                             <Button onClick={() => handleDelete(template.id, template.title)}><Trash />Delete</Button>
+                        </div>
+                    )}
+                    {(userRole == 'member' && hasPlan.length == 0) && (
+                        <div>
+                            <Button onClick={() => selectPlan(template.id)}>Select Plan</Button>
                         </div>
                     )}
                 </div>
@@ -100,7 +114,6 @@ export default function Show({ template }: any) {
                                     <ItemDescription>{data.description}</ItemDescription>
                                 </div>
                             </div>
-
                         </ItemHeader>
                         <Separator />
                         <ItemContent>
@@ -115,6 +128,7 @@ export default function Show({ template }: any) {
                                                     <Label>{workout.name}</Label>
                                                 </div>
                                             </div>
+                                            <Separator />
                                             <div className="space-y-2">
                                                 <ItemTitle className="text-[18px]"><strong>Exercises</strong></ItemTitle>
                                                 {workout.exercises.map((exercise) => (
@@ -134,6 +148,7 @@ export default function Show({ template }: any) {
                                                             <ItemTitle><strong>Rest (seconds)</strong></ItemTitle>
                                                             <Label>{exercise.rest_seconds}</Label>
                                                         </div>
+                                                        <Separator />
                                                     </div>
                                                 ))}
                                             </div>
@@ -142,7 +157,6 @@ export default function Show({ template }: any) {
                                 </div>
                             </div>
                         </ItemContent>
-                        <Separator />
                         <ItemFooter>
                             <div>
                                 <div className="space-y-4">
@@ -166,6 +180,7 @@ export default function Show({ template }: any) {
                                                         <Label>{guideline.diet_type}</Label>
                                                     </div>
                                                 </div>
+                                                <Separator />
                                                 <div>
                                                     <ItemTitle className="text-[16px]"><strong>Macronutrients</strong></ItemTitle>
                                                 </div>
@@ -185,6 +200,7 @@ export default function Show({ template }: any) {
                                                         </div>
                                                     </div>
                                                 ))}
+                                                <Separator />
                                                 <div>
                                                     <ItemTitle className="text-[16px]"><strong>Rules</strong></ItemTitle>
                                                 </div>
@@ -194,6 +210,7 @@ export default function Show({ template }: any) {
                                                             <ItemTitle><strong>Rule</strong></ItemTitle>
                                                             <Label>{rule.rule}</Label>
                                                         </div>
+                                                        <Separator />
                                                     </div>
                                                 ))}
                                                 <div>
@@ -205,6 +222,7 @@ export default function Show({ template }: any) {
                                                             <ItemTitle><strong>Food</strong></ItemTitle>
                                                             <Label>{recommendation.food}</Label>
                                                         </div>
+                                                        <Separator />
                                                     </div>
                                                 ))}
                                                 <div>
@@ -216,6 +234,7 @@ export default function Show({ template }: any) {
                                                             <ItemTitle><strong>Food</strong></ItemTitle>
                                                             <Label>{limitation.food}</Label>
                                                         </div>
+                                                        <Separator />
                                                     </div>
                                                 ))}
                                             </div>

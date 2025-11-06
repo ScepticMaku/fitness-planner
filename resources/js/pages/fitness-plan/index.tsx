@@ -40,12 +40,12 @@ export default function Index({ plan }: any) {
                         <EmptyMedia variant="icon">
                             <ArchiveX />
                         </EmptyMedia>
-                        <EmptyTitle>Templates Empty</EmptyTitle>
-                        <EmptyDescription>No templates found</EmptyDescription>
+                        <EmptyTitle>Plan Empty</EmptyTitle>
+                        <EmptyDescription>You currenty have no active plan.</EmptyDescription>
                     </EmptyHeader>
                     <EmptyContent>
-                        <Link href={route('plan-templates.create')}>
-                            <Button>Add Template</Button>
+                        <Link href={route('plan-templates.index')}>
+                            <Button>Search Plans</Button>
                         </Link>
                     </EmptyContent>
                 </Empty>

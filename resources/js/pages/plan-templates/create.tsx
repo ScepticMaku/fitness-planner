@@ -17,13 +17,7 @@ import {
 } from "@/components/ui/select"
 import {
     Item,
-    ItemActions,
     ItemContent,
-    ItemDescription,
-    ItemFooter,
-    ItemHeader,
-    ItemMedia,
-    ItemTitle,
 } from "@/components/ui/item"
 
 const breadcrumbs: BreadcrumbItem[] = [

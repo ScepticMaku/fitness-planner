@@ -68,48 +68,50 @@ export default function Index({ templates }: any) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Plan Templates" />
-            <h1>Plan Templates</h1>
-            <div>
-                <Link href={route('plan-templates.create')}>
-                    <Button><Plus />Add Template</Button>
-                </Link>
-                <Link href={route('plan-templates.viewCreatedTemplates')}>
-                    <Button><Eye />View Created Templates</Button>
-                </Link>
-            </div>
-            <div>
-                {templates.map((template: any) => (
-                    <Item className="w-100" variant="outline">
-                        <ItemHeader>
-                            <ItemTitle>{template.title}</ItemTitle>
-                            {template.user == null && (
-                                <ItemDescription>Created by: Deleted Trainer</ItemDescription>
-                            )}
-                            {template.user != null && (
-                                <ItemDescription>Created by: {template.user.name}</ItemDescription>
-                            )}
-                        </ItemHeader>
-                        <ItemContent>
-                            <div className="flex space-x-2">
-                                <Badge className="capitalize">{template.fitness_level}</Badge>
-                                <Badge>{template.plan_type}</Badge>
-                            </div>
-                            <ItemDescription>{template.goal}</ItemDescription>
-                        </ItemContent>
-                        <ItemFooter>
-                            <div>
-                                <Link href={route('plan-templates.show', template.id)}>
-                                    <Button><Eye />View</Button>
-                                </Link>
-                                {template.user_id == userId && (
-                                    <Link href={route('plan-templates.edit', template.id)}>
-                                        <Button><Pencil />Edit</Button>
-                                    </Link>
+            <div className="m-4 space-y-2">
+                <h1>Plan Templates</h1>
+                <div className="space-x-2">
+                    <Link href={route('plan-templates.create')}>
+                        <Button><Plus />Add Template</Button>
+                    </Link>
+                    <Link href={route('plan-templates.viewCreatedTemplates')}>
+                        <Button><Eye />View Created Templates</Button>
+                    </Link>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                    {templates.map((template: any) => (
+                        <Item className="w-100" variant="outline">
+                            <ItemHeader>
+                                <ItemTitle>{template.title}</ItemTitle>
+                                {template.user == null && (
+                                    <ItemDescription>Created by: Deleted Trainer</ItemDescription>
                                 )}
-                            </div>
-                        </ItemFooter>
-                    </Item>
-                ))}
+                                {template.user != null && (
+                                    <ItemDescription>Created by: {template.user.name}</ItemDescription>
+                                )}
+                            </ItemHeader>
+                            <ItemContent>
+                                <div className="flex space-x-2">
+                                    <Badge className="capitalize">{template.fitness_level}</Badge>
+                                    <Badge>{template.plan_type}</Badge>
+                                </div>
+                                <ItemDescription>{template.goal}</ItemDescription>
+                            </ItemContent>
+                            <ItemFooter>
+                                <div className="space-x-2">
+                                    <Link href={route('plan-templates.show', template.id)}>
+                                        <Button><Eye />View</Button>
+                                    </Link>
+                                    {template.user_id == userId && (
+                                        <Link href={route('plan-templates.edit', template.id)}>
+                                            <Button><Pencil />Edit</Button>
+                                        </Link>
+                                    )}
+                                </div>
+                            </ItemFooter>
+                        </Item>
+                    ))}
+                </div>
             </div>
         </AppLayout>
     );

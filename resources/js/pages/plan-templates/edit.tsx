@@ -9,12 +9,18 @@ import InputError from '@/components/input-error';
 import { Textarea } from '@/components/ui/textarea';
 import { Save } from 'lucide-react';
 import {
+    Item,
+    ItemContent,
+} from "@/components/ui/item"
+import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { Separator } from '@/components/ui/separator';
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Plan Templates',
@@ -369,101 +375,110 @@ export default function Edit({ template }: any) {
                     <Button><ChevronLeft /> Back</Button>
                 </Link>
             </div>
-            <div className="ml-4 mr-4">
+            <div className="ml-4 mr-4 mb-4">
                 <form className="space-y-2" onSubmit={handleSubmit}>
+                    <Item variant="outline">
+                        <ItemContent>
+                            <div>
+                                <Label htmlFor="title">Title</Label>
+                                <Input
+                                    type="text"
+                                    placeholder="Enter plan title"
+                                    value={data.title} onChange={(e) => setData('title', e.target.value)}
+                                />
+                                <InputError
+                                    message={errors.title}
+                                />
+                            </div>
+                            <div>
+                                <Label htmlFor="goal">Goal</Label>
+                                <Input
+                                    type="text"
+                                    placeholder="Enter goal"
+                                    value={data.goal} onChange={(e) => setData('goal', e.target.value)}
+                                />
+                                <InputError
+                                    message={errors.goal}
+                                />
+                            </div>
+                            <div>
+                                <Label>Fitness Level</Label>
+                            </div>
+                            <div>
+                                <Select value={data.fitness_level || ''} onValueChange={(e) => setData('fitness_level', e)}>
+                                    <SelectTrigger className="w-[180px]">
+                                        <SelectValue placeholder="Fitness Level" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="beginner">Beginner</SelectItem>
+                                        <SelectItem value="intermediate">Intermediate</SelectItem>
+                                        <SelectItem value="advanced">Advanced</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <InputError
+                                message={errors.fitness_level}
+                            />
+                            <div>
+                                <Label>Plan Type</Label>
+                            </div>
+                            <div>
+                                <Select value={data.plan_type || ''} onValueChange={(e) => setData('plan_type', e)}>
+                                    <SelectTrigger className="w-[180px]">
+                                        <SelectValue placeholder="Plan Type" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="Strength and Conditioning" key="strength-and-conditioning">Strength and Conditioning</SelectItem>
+                                        <SelectItem value="Weight Loss or Fat Loss" key="weight-loss-or-fat-loss">Weight Loss or Fat Loss</SelectItem>
+                                        <SelectItem value="Functional Training" key="functional-training">Functional Training</SelectItem>
+                                        <SelectItem value="Body Building" key="body-building">Body Building</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <InputError
+                                    message={errors.plan_type}
+                                />
+                            </div>
+                            <div>
+                                <Label htmlFor="role description">Description</Label>
+                                <Textarea
+                                    placeholder="Enter template description"
+                                    value={data.description} onChange={(e) => setData('description', e.target.value)}
+                                ></Textarea>
+                                <InputError
+                                    message={errors.description}
+                                />
+                            </div>
+                        </ItemContent>
+                    </Item>
                     <div>
-                        <Label htmlFor="title">Title</Label>
-                        <Input
-                            type="text"
-                            placeholder="Enter plan title"
-                            value={data.title} onChange={(e) => setData('title', e.target.value)}
-                        />
-                        <InputError
-                            message={errors.title}
-                        />
-                    </div>
-                    <div>
-                        <Label htmlFor="goal">Goal</Label>
-                        <Input
-                            type="text"
-                            placeholder="Enter goal"
-                            value={data.goal} onChange={(e) => setData('goal', e.target.value)}
-                        />
-                        <InputError
-                            message={errors.goal}
-                        />
-                    </div>
-                    <div>
-                        <Label>Fitness Level</Label>
-                    </div>
-                    <div>
-                        <Select value={data.fitness_level || ''} onValueChange={(e) => setData('fitness_level', e)}>
-                            <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Fitness Level" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="beginner">Beginner</SelectItem>
-                                <SelectItem value="intermediate">Intermediate</SelectItem>
-                                <SelectItem value="advanced">Advanced</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <InputError
-                        message={errors.fitness_level}
-                    />
-                    <div>
-                        <Label>Plan Type</Label>
-                    </div>
-                    <div>
-                        <Select value={data.plan_type || ''} onValueChange={(e) => setData('plan_type', e)}>
-                            <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Plan Type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Strength and Conditioning" key="strength-and-conditioning">Strength and Conditioning</SelectItem>
-                                <SelectItem value="Weight Loss or Fat Loss" key="weight-loss-or-fat-loss">Weight Loss or Fat Loss</SelectItem>
-                                <SelectItem value="Functional Training" key="functional-training">Functional Training</SelectItem>
-                                <SelectItem value="Body Building" key="body-building">Body Building</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <InputError
-                            message={errors.plan_type}
-                        />
-                    </div>
-                    <div>
-                        <Label htmlFor="role description">Description</Label>
-                        <Textarea
-                            placeholder="Enter template description"
-                            value={data.description} onChange={(e) => setData('description', e.target.value)}
-                        ></Textarea>
-                        <InputError
-                            message={errors.description}
-                        />
-                    </div>
-                    <div>
-                        <h1>Workouts</h1>
+                        <h1 className="text-[18px]">Workouts</h1>
                     </div>
                     <div>
                         <Button type="button" onClick={() => addWorkout()}>Add Workout</Button>
                     </div>
                     {workoutsArray.map((workout) => (
-                        <div key={workout.key}>
-                            <div>
-                                <Label>Workout Name</Label>
-                                <Input
-                                    type="text"
-                                    value={workout.name}
-                                    onChange={(e) => updateWorkoutName(workout.key, e.target.value)}
-                                    placeholder="Workout Name"
-                                />
-                                {workoutsArray.length > 1 && (
-                                    <Button onClick={() => removeWorkout(workout.key)}>Remove Workout</Button>
-                                )}
-                            </div>
+                        <div key={workout.key} className="space-y-2">
+                            <Item variant="outline">
+                                <ItemContent>
+                                    <Label>Workout Name</Label>
+                                    <Input
+                                        type="text"
+                                        value={workout.name}
+                                        onChange={(e) => updateWorkoutName(workout.key, e.target.value)}
+                                        placeholder="Workout Name"
+                                    />
+                                    <div>
+                                        {workoutsArray.length > 1 && (
+                                            <div className="space-y-2">
+                                                <Separator />
+                                                <Button onClick={() => removeWorkout(workout.key)}>Remove Workout</Button>
+                                            </div>
+                                        )}
+                                    </div>
+                                </ItemContent>
+                            </Item>
                             <div>
                                 <h1>Exercises</h1>
-                            </div>
-                            <div>
                                 <Button type="button" onClick={() => addExercise(workout.key)}>
                                     Add Exercise
                                 </Button>
@@ -471,46 +486,53 @@ export default function Edit({ template }: any) {
                             <div className="space-y-2">
                                 {workout.exercises.map((exercise, exerciseIndex) => (
                                     <div className="space-y-2">
-                                        <div>
-                                            <Label>Exercise Name</Label>
-                                            <Input
-                                                type="text"
-                                                value={exercise.name}
-                                                onChange={(e) => updateExercise(workout.key, exerciseIndex, 'name', e.target.value)}
-                                                placeholder="Jefferson Curls"
-                                            />
-                                        </div>
-                                        <div>
-                                            <Label>Sets</Label>
-                                            <Input
-                                                type="number"
-                                                value={exercise.sets}
-                                                onChange={(e) => updateExercise(workout.key, exerciseIndex, 'sets', parseInt(e.target.value))}
-                                                placeholder="e.g., 3"
-                                            />
-                                        </div>
-                                        <div>
-                                            <Label>Reps</Label>
-                                            <Input
-                                                type="text"
-                                                value={exercise.reps}
-                                                onChange={(e) => updateExercise(workout.key, exerciseIndex, 'reps', e.target.value)}
-                                                placeholder="e.g., 8-12"
-                                            />
-                                        </div>
-                                        <div>
-                                            <Label>Rest (seconds)</Label>
-                                            <Input
-                                                type="number"
-                                                value={exercise.rest_seconds}
-                                                onChange={(e) => updateExercise(workout.key, exerciseIndex, 'rest_seconds', parseInt(e.target.value))}
-                                            />
-                                        </div>
-                                        {workout.exercises.length > 1 && (
-                                            <Button type="button" onClick={() => removeExercise(workout.key, exerciseIndex)}>
-                                                Remove Exercise
-                                            </Button>
-                                        )}
+                                        <Item variant="outline">
+                                            <ItemContent>
+                                                <Label>Exercise Name</Label>
+                                                <Input
+                                                    type="text"
+                                                    value={exercise.name}
+                                                    onChange={(e) => updateExercise(workout.key, exerciseIndex, 'name', e.target.value)}
+                                                    placeholder="Jefferson Curls"
+                                                />
+                                                <div>
+                                                    <Label>Sets</Label>
+                                                    <Input
+                                                        type="number"
+                                                        value={exercise.sets}
+                                                        onChange={(e) => updateExercise(workout.key, exerciseIndex, 'sets', parseInt(e.target.value))}
+                                                        placeholder="e.g., 3"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <Label>Reps</Label>
+                                                    <Input
+                                                        type="text"
+                                                        value={exercise.reps}
+                                                        onChange={(e) => updateExercise(workout.key, exerciseIndex, 'reps', e.target.value)}
+                                                        placeholder="e.g., 8-12"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <Label>Rest (seconds)</Label>
+                                                    <Input
+                                                        type="number"
+                                                        value={exercise.rest_seconds}
+                                                        onChange={(e) => updateExercise(workout.key, exerciseIndex, 'rest_seconds', parseInt(e.target.value))}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    {workout.exercises.length > 1 && (
+                                                        <div className="space-y-2">
+                                                            <Separator />
+                                                            <Button type="button" onClick={() => removeExercise(workout.key, exerciseIndex)}>
+                                                                Remove Exercise
+                                                            </Button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </ItemContent>
+                                        </Item>
                                     </div>
                                 ))}
 
@@ -524,51 +546,56 @@ export default function Edit({ template }: any) {
                         <Button type="button" onClick={() => addGuideline()}>Add Guideline</Button>
                     </div>
                     {guidelinesArray.map((guideline: any) => (
-                        <div key={guideline.key}>
-                            <div>
-                                <div>
-                                    <Label>name</Label>
-                                    <Input
-                                        type="text"
-                                        value={guideline.name}
-                                        onChange={(e) => updateGuidelines(guideline.key, 'name', e.target.value)}
-                                        placeholder="Vegetarian"
-                                    />
-                                </div>
-                                <div>
-                                    <Label>Description</Label>
-                                    <Textarea
-                                        placeholder="Guildine Description"
-                                        value={guideline.description}
-                                        onChange={(e) => updateGuidelines(guideline.key, 'description', e.target.value)}
-                                    ></Textarea>
-                                </div>
-                                <div>
-                                    <Label>Diet Type</Label>
-                                    <Input
-                                        type="text"
-                                        value={guideline.diet_type}
-                                        onChange={(e) => updateGuidelines(guideline.key, 'diet_type', e.target.value)}
-                                    />
-                                </div>
-                                <div>
-                                    <Label>Target Calories</Label>
-                                    <Input
-                                        type="number"
-                                        value={guideline.calorie_target}
-                                        onChange={(e) => updateGuidelines(guideline.key, 'calorie_target', e.target.value)}
-                                    />
-                                </div>
-                                {guidelinesArray.length > 1 && (
-                                    <Button onClick={() => removeGuideline(guideline.key)}>Remove Guideline</Button>
-                                )}
-                            </div>
+                        <div className="space-y-2" key={guideline.key}>
+                            <Item variant="outline">
+                                <ItemContent>
+                                    <div>
+                                        <Label>Name</Label>
+                                        <Input
+                                            type="text"
+                                            value={guideline.name}
+                                            onChange={(e) => updateGuidelines(guideline.key, 'name', e.target.value)}
+                                            placeholder="Vegetarian"
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label>Description</Label>
+                                        <Textarea
+                                            placeholder="Guildine Description"
+                                            value={guideline.description}
+                                            onChange={(e) => updateGuidelines(guideline.key, 'description', e.target.value)}
+                                        ></Textarea>
+                                    </div>
+                                    <div>
+                                        <Label>Diet Type</Label>
+                                        <Input
+                                            type="text"
+                                            value={guideline.diet_type}
+                                            onChange={(e) => updateGuidelines(guideline.key, 'diet_type', e.target.value)}
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label>Target Calories</Label>
+                                        <Input
+                                            type="number"
+                                            value={guideline.calorie_target}
+                                            onChange={(e) => updateGuidelines(guideline.key, 'calorie_target', e.target.value)}
+                                        />
+                                    </div>
+                                    {guidelinesArray.length > 1 && (
+                                        <div className="space-y-2">
+                                            <Separator />
+                                            <Button onClick={() => removeGuideline(guideline.key)}>Remove Guideline</Button>
+                                        </div>
+                                    )}
+                                </ItemContent>
+                            </Item>
                             <div>
                                 <h1>Macronutrients</h1>
                             </div>
                             <div>
                                 {guideline.macronutrients.map((macro, macroIndex) => (
-                                    <div>
+                                    <Item variant="outline">
                                         <div>
                                             <Label>Protein Grams</Label>
                                             <Input
@@ -593,7 +620,7 @@ export default function Edit({ template }: any) {
                                                 onChange={(e) => updateMacro(guideline.key, macroIndex, 'fats', e.target.value)}
                                             />
                                         </div>
-                                    </div>
+                                    </Item>
                                 ))}
                             </div>
                             <div>
@@ -604,25 +631,30 @@ export default function Edit({ template }: any) {
                                     Add Rule
                                 </Button>
                             </div>
-                            <div>
+                            <div className="space-y-2">
                                 {guideline.rules.map((rule, ruleIndex) => (
-                                    <div>
-                                        <div>
-                                            <Label>Rule</Label>
-                                            <Input
-                                                type="text"
-                                                value={rule.name}
-                                                onChange={(e) => updateRule(guideline.key, ruleIndex, 'rule', e.target.value)}
-                                            />
-                                        </div>
-                                        {guideline.rules.length > 1 && (
-                                            <Button type="button" onClick={() => removeRule(guideline.key, ruleIndex)}>
-                                                Remove Rule
-                                            </Button>
-                                        )}
-                                    </div>
+                                    <Item variant="outline">
+                                        <ItemContent>
+                                            <div>
+                                                <Label>Rule</Label>
+                                                <Input
+                                                    type="text"
+                                                    value={rule.name}
+                                                    onChange={(e) => updateRule(guideline.key, ruleIndex, 'rule', e.target.value)}
+                                                    placeholder="Rule Title"
+                                                />
+                                            </div>
+                                            {guideline.rules.length > 1 && (
+                                                <div className="space-y-2">
+                                                    <Separator />
+                                                    <Button type="button" onClick={() => removeRule(guideline.key, ruleIndex)}>
+                                                        Remove Rule
+                                                    </Button>
+                                                </div>
+                                            )}
+                                        </ItemContent>
+                                    </Item>
                                 ))}
-
                             </div>
                             <div>
                                 <h1>Foods Recommendations</h1>
@@ -632,23 +664,29 @@ export default function Edit({ template }: any) {
                                     Add Food
                                 </Button>
                             </div>
-                            <div>
+                            <div className="space-y-2">
                                 {guideline.foods_recommendations.map((recommendation, recommendationIndex) => (
-                                    <div>
-                                        <div>
-                                            <Label>Food</Label>
-                                            <Input
-                                                type="text"
-                                                value={recommendation.food}
-                                                onChange={(e) => updateRecommendation(guideline.key, recommendationIndex, 'food', e.target.value)}
-                                            />
-                                        </div>
-                                        {guideline.foods_recommendations.length > 1 && (
-                                            <Button type="button" onClick={() => removeRecommendation(guideline.key, recommendationIndex)}>
-                                                Remove Food
-                                            </Button>
-                                        )}
-                                    </div>
+                                    <Item variant="outline">
+                                        <ItemContent>
+                                            <div>
+                                                <Label>Food</Label>
+                                                <Input
+                                                    type="text"
+                                                    value={recommendation.food}
+                                                    onChange={(e) => updateRecommendation(guideline.key, recommendationIndex, 'food', e.target.value)}
+                                                    placeholder="Food"
+                                                />
+                                            </div>
+                                            {guideline.foods_recommendations.length > 1 && (
+                                                <div className="space-y-2">
+                                                    <Separator />
+                                                    <Button type="button" onClick={() => removeRecommendation(guideline.key, recommendationIndex)}>
+                                                        Remove Food
+                                                    </Button>
+                                                </div>
+                                            )}
+                                        </ItemContent>
+                                    </Item>
                                 ))}
                             </div>
                             <div>
@@ -659,33 +697,39 @@ export default function Edit({ template }: any) {
                                     Add Food
                                 </Button>
                             </div>
-                            <div>
+                            <div className="space-y-2">
                                 {guideline.foods_limitations.map((limitation, limitationIndex) => (
-                                    <div>
-                                        <div>
-                                            <Label>Food</Label>
-                                            <Input
-                                                type="text"
-                                                value={limitation.food}
-                                                onChange={(e) => updateLimitation(guideline.key, limitationIndex, 'food', e.target.value)}
-                                            />
-                                        </div>
-                                        {guideline.foods_limitations.length > 1 && (
-                                            <Button type="button" onClick={() => removeLimitation(guideline.key, limitationIndex)}>
-                                                Remove Food
-                                            </Button>
-                                        )}
-                                    </div>
+                                    <Item variant="outline">
+                                        <ItemContent>
+                                            <div>
+                                                <Label>Food</Label>
+                                                <Input
+                                                    type="text"
+                                                    value={limitation.food}
+                                                    onChange={(e) => updateLimitation(guideline.key, limitationIndex, 'food', e.target.value)}
+                                                    placeholder="Food"
+                                                />
+                                            </div>
+                                            {guideline.foods_limitations.length > 1 && (
+                                                <div className="space-y-2">
+                                                    <Separator />
+                                                    <Button type="button" onClick={() => removeLimitation(guideline.key, limitationIndex)}>
+                                                        Remove Food
+                                                    </Button>
+                                                </div>
+                                            )}
+                                        </ItemContent>
+                                    </Item>
                                 ))}
                             </div>
 
                         </div>
                     ))}
                     <div className="space-x-2">
-                        <Button type="submit"><Save />Save Changes</Button>
+                        <Button type="submit"><Save /> Save Changes</Button>
                     </div>
                 </form>
-            </div >
+            </div>
         </AppLayout >
     );
 }

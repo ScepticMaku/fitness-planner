@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PlanTemplate;
 use App\Models\User;
+use App\Models\UserHasPlan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -66,9 +67,11 @@ class PlanTemplatesController extends Controller
      */
     public function show(string $id)
     {
+        $userHasPlan = UserHasPlan::get();
         $template = PlanTemplate::find($id);
         return Inertia::render('plan-templates/show', [
             'template' => $template,
+            'userHasPlan' => $userHasPlan,
         ]);
     }
 
