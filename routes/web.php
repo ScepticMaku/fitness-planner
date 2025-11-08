@@ -8,7 +8,6 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SchedulesController;
 use App\Http\Controllers\TrainerController;
 use App\Http\Controllers\UserHasPlanController;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -25,9 +24,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::get('plan-templates/view-created-templates', [PlanTemplatesController::class, 'viewCreatedTemplates'])->name('plan-templates.viewCreatedTemplates');
-
     Route::post('user-has-plans/{id}/select', [UserHasPlanController::class, 'select'])->name('user-has-plans.select');
-
+    Route::put('user-has-plans/{id}/change', [UserHasPlanController::class, 'change'])->name('user-has-plans.change');
+    Route::delete('user-has-plans/{id}/cancel', [UserHasPlanController::class, 'cancel'])->name('user-has-plans.cancel');
+    Route::put('use-has-plans/{id}/start', [UserHasPlanController::class, 'start'])->name('user-has-plans.start');
 
     Route::resource("users", UserController::class)->middleware('permission:access-users-module');
     Route::resource("roles", RoleController::class)->middleware('permission:access-roles-module');

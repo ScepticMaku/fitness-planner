@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('plan_template_id')->constrained('plan_templates')->onDelete('cascade');
+            $table->boolean('is_active')->default(false);
             $table->timestamps();
         });
     }

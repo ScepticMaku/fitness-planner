@@ -141,211 +141,211 @@ return new class extends Migration
 
         $permissions = [
             [
-                'module' => 'User',
+                'module' => 'Users',
                 'label' => 'Access Users Module',
                 'name' => Str::slug('Access Users Module'),
                 'description' => 'Permission to access users'
             ],
             [
-                'module' => 'User',
+                'module' => 'Users',
                 'label' => 'View Users',
                 'name' => Str::slug('View Users'),
                 'description' => 'Permission to view users'
             ],
             [
-                'module' => 'User',
+                'module' => 'Users',
                 'label' => 'Create Users',
                 'name' => Str::slug('Create Users'),
                 'description' => 'Permission to create users'
             ],
             [
-                'module' => 'User',
+                'module' => 'Users',
                 'label' => 'Edit Users',
                 'name' => Str::slug('Edit Users'),
                 'description' => 'Permission to edit users'
             ],
             [
-                'module' => 'User',
+                'module' => 'Users',
                 'label' => 'Delete Users',
                 'name' => Str::slug('Delete Users'),
                 'description' => 'Permission to delete users'
             ],
             [
-                'module' => 'Role',
+                'module' => 'Roles',
                 'label' => 'Access Roles Module',
                 'name' => Str::slug('Access Roles Module'),
                 'description' => 'Permission to access roles'
             ],
             [
-                'module' => 'Role',
+                'module' => 'Roles',
                 'label' => 'View Roles',
                 'name' => Str::slug('View Roles'),
                 'description' => 'Permission to view roles'
             ],
             [
-                'module' => 'Role',
+                'module' => 'Roles',
                 'label' => 'Create Roles',
                 'name' => Str::slug('Create Roles'),
                 'description' => 'Permission to create roles'
             ],
             [
-                'module' => 'Role',
+                'module' => 'Roles',
                 'label' => 'Edit Roles',
                 'name' => Str::slug('Edit Roles'),
                 'description' => 'Permission to edit roles'
             ],
             [
-                'module' => 'Role',
+                'module' => 'Roles',
                 'label' => 'Delete Roles',
                 'name' => Str::slug('Delete Roles'),
                 'description' => 'Permission to delete roles'
             ],
             [
-                'module' => 'Permission',
+                'module' => 'Permissions',
                 'label' => 'Access Permissions Module',
                 'name' => Str::slug('Access Permissions Module'),
                 'description' => 'Permission to access permissions'
             ],
             [
-                'module' => 'Permission',
+                'module' => 'Permissions',
                 'label' => 'View Permissions',
                 'name' => Str::slug('View Permissions'),
                 'description' => 'Permission to view permissions'
             ],
             [
-                'module' => 'Permission',
+                'module' => 'Permissions',
                 'label' => 'Create Permissions',
                 'name' => Str::slug('Create Permissions'),
                 'description' => 'Permission to create permissions'
             ],
             [
-                'module' => 'Permission',
+                'module' => 'Permissions',
                 'label' => 'Edit Permissions',
                 'name' => Str::slug('Edit Permissions'),
                 'description' => 'Permission to edit permissions'
             ],
             [
-                'module' => 'Permission',
+                'module' => 'Permissions',
                 'label' => 'Delete Permissions',
                 'name' => Str::slug('Delete Permissions'),
                 'description' => 'Permission to delete permissions'
             ],
             [
-                'module' => 'Trainer',
+                'module' => 'Trainers',
                 'label' => 'Access Trainers Module',
                 'name' => Str::slug('Access Trainers Module'),
                 'description' => 'Permission to access trainers'
             ],
             [
-                'module' => 'Trainer',
+                'module' => 'Trainers',
                 'label' => 'View Trainers',
                 'name' => Str::slug('View Trainers'),
                 'description' => 'Permission to view trainers'
             ],
             [
-                'module' => 'Trainer',
+                'module' => 'Trainers',
                 'label' => 'Create Trainers',
                 'name' => Str::slug('Create Trainers'),
                 'description' => 'Permission to create trainers'
             ],
             [
-                'module' => 'Trainer',
+                'module' => 'Trainers',
                 'label' => 'Edit Trainers',
                 'name' => Str::slug('Edit Trainers'),
                 'description' => 'Permission to edit trainers'
             ],
             [
-                'module' => 'Trainer',
+                'module' => 'Trainers',
                 'label' => 'Delete Trainers',
                 'name' => Str::slug('Delete Trainers'),
                 'description' => 'Permission to delete trainers'
             ],
             [
-                'module' => 'Schedule',
+                'module' => 'Schedules',
                 'label' => 'Access Schedules Module',
                 'name' => Str::slug('Access Schedules Module'),
                 'description' => 'Permission to access schedules'
             ],
             [
-                'module' => 'Schedule',
+                'module' => 'Schedules',
                 'label' => 'View Schedules',
                 'name' => Str::slug('View Schedules'),
                 'description' => 'Permission to view schedules'
             ],
             [
-                'module' => 'Schedule',
+                'module' => 'Schedules',
                 'label' => 'Create Schedules',
                 'name' => Str::slug('Create Schedules'),
                 'description' => 'Permission to create schedules'
             ],
             [
-                'module' => 'Schedule',
+                'module' => 'Schedules',
                 'label' => 'Edit Schedules',
                 'name' => Str::slug('Edit Schedules'),
                 'description' => 'Permission to edit schedules'
             ],
             [
-                'module' => 'Schedule',
+                'module' => 'Schedules',
                 'label' => 'Delete Schedules',
                 'name' => Str::slug('Delete Schedules'),
                 'description' => 'Permission to delete schedules'
             ],
             [
-                'module' => 'Fitness Plan',
+                'module' => 'Fitness Plans',
                 'label' => 'Access Fitness Plan Module',
                 'name' => Str::slug('Access Fitness Plan Module'),
                 'description' => 'Permission to access fitness plan'
             ],
             [
-                'module' => 'Fitness Plan',
+                'module' => 'Fitness Plans',
                 'label' => 'View Fitness Plans',
                 'name' => Str::slug('View Fitness Plans'),
                 'description' => 'Permission to view fitness plans'
             ],
             [
-                'module' => 'Fitness Plan',
+                'module' => 'Fitness Plans',
                 'label' => 'Create Fitness Plans',
                 'name' => Str::slug('Create Fitness Plans'),
                 'description' => 'Permission to create fitness plans'
             ],
             [
-                'module' => 'Fitness Plan',
+                'module' => 'Fitness Plans',
                 'label' => 'Edit Fitness Plans',
                 'name' => Str::slug('Edit Fitness Plans'),
                 'description' => 'Permission to edit fitness plans'
             ],
             [
-                'module' => 'Fitness Plan',
+                'module' => 'Fitness Plans',
                 'label' => 'Delete Fitness Plans',
                 'name' => Str::slug('Delete Fitness Plans'),
                 'description' => 'Permission to delete fitness plans'
             ],
             [
-                'module' => 'Plan Template',
+                'module' => 'Plan Templates',
                 'label' => 'Access Plan Templates Module',
                 'name' => Str::slug('Access Plan Templates Module'),
                 'description' => 'Permission to access plan templates'
             ],
             [
-                'module' => 'Plan Template',
+                'module' => 'Plan Templates',
                 'label' => 'View Plan Templates',
                 'name' => Str::slug('View Plan Templates'),
                 'description' => 'Permission to view plan templates'
             ],
             [
-                'module' => 'Plan Template',
-                'label' => 'Create Plan Template',
-                'name' => Str::slug('Create Plan Template'),
+                'module' => 'Plan Templates',
+                'label' => 'Create Plan Templates',
+                'name' => Str::slug('Create Plan Templates'),
                 'description' => 'Permission to create plan template'
             ],
             [
-                'module' => 'Plan Template',
+                'module' => 'Plan Templates',
                 'label' => 'Edit Plan Templates',
                 'name' => Str::slug('Edit Plan Templates'),
                 'description' => 'Permission to edit plan templates'
             ],
             [
-                'module' => 'Plan Template',
+                'module' => 'Plan Templates',
                 'label' => 'Delete Plan Templates',
                 'name' => Str::slug('Delete Plan Templates'),
                 'description' => 'Permission to delete plan templates'

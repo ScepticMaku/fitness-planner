@@ -32,11 +32,16 @@ export default function Show({ userHasPlan, template }: any) {
     const userId = auth.user.id;
     const userRole = auth.roles;
     const hasPlan = userHasPlan.filter(plan => plan.user_id == userId);
+    const isPlanActive = hasPlan.map(h => h.is_active);
+    const isSamePlan = hasPlan.map(h => h.plan_template_id == template.id);
+
+    console.log(isSamePlan);
 
     const { data } = useForm({
         title: template.title,
         goal: template.goal,
-        fitness_level: template.fitness_level, plan_type: template.plan_type,
+        fitness_level: template.fitness_level,
+        plan_type: template.plan_type,
         description: template.description,
         workout_structure: template.workout_structure,
         diet_guidelines: template.diet_guidelines,
@@ -57,7 +62,7 @@ export default function Show({ userHasPlan, template }: any) {
     };
 
     const { delete: destroy } = useForm();
-    const { post } = useForm();
+    const { post, put } = useForm();
     const guidelinesArray = getGuidelinesArray();
     const workoutsArray = getWorkoutsArray();
 
@@ -70,6 +75,12 @@ export default function Show({ userHasPlan, template }: any) {
     const selectPlan = (id: number) => {
         if (confirm('Do you want to select this plan?')) {
             post(route('user-has-plans.select', id));
+        }
+    }
+
+    const changePlan = (id: number) => {
+        if (confirm(`Do you want to switch to this template?`)) {
+            put(route('user-has-plans.change', id));
         }
     }
 
@@ -91,13 +102,23 @@ export default function Show({ userHasPlan, template }: any) {
                             <Button onClick={() => selectPlan(template.id)}>Select Plan</Button>
                         </div>
                     )}
+                    {(userRole == 'member' && isPlanActive == 0 && hasPlan.length == 1 && isSamePlan == 'false') && (
+                        <div>
+                            <Button onClick={() => changePlan(template.id)}>Change to This Plan</Button>
+                        </div>
+                    )}
                 </div>
                 <div>
                     <Item variant="outline" >
                         <ItemHeader>
                             <div className="space-y-3">
                                 <ItemTitle className="text-[20px]"><strong>{data.title}</strong></ItemTitle>
-                                <ItemTitle>Created By: Deleted Trainer</ItemTitle>
+                                {template.user == null && (
+                                    <ItemDescription>Created by: Deleted Trainer</ItemDescription>
+                                )}
+                                {template.user != null && (
+                                    <ItemDescription>Created by: {template.user.name}</ItemDescription>
+                                )}
                                 <div>
                                     <Label><strong>Goal</strong></Label>
                                     <ItemTitle>{data.goal}</ItemTitle>

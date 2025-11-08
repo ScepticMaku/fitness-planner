@@ -28,6 +28,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Edit({ permission }: any) {
 
+
     const { data, setData, put, errors } = useForm({
         module: permission.module,
         label: permission.label,
@@ -59,6 +60,10 @@ export default function Edit({ permission }: any) {
                                 <SelectItem value="users" key="users">Users</SelectItem>
                                 <SelectItem value="roles" key="roles">Roles</SelectItem>
                                 <SelectItem value="permissions" key="permissions">Permissions</SelectItem>
+                                <SelectItem value="plan-templates" key="plan-templates">Plan Templates</SelectItem>
+                                <SelectItem value="fitness-plan" key="fitness-plan">Fitness Plan</SelectItem>
+                                <SelectItem value="schedules" key="schedules">Schedules</SelectItem>
+                                <SelectItem value="trainers" key="trainers">Trainers</SelectItem>
                             </SelectContent>
                         </Select>
                         <InputError

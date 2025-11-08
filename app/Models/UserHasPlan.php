@@ -8,7 +8,8 @@ class UserHasPlan extends Model
 {
     protected $fillable = [
         'user_id',
-        'plan_template_id'
+        'plan_template_id',
+        'is_active'
     ];
 
     public function user() {

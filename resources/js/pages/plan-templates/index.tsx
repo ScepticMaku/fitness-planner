@@ -24,6 +24,7 @@ import {
     ItemTitle,
 } from "@/components/ui/item"
 import { Badge } from '@/components/ui/badge';
+import { hasPermission } from '@/utils/authorization';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -35,6 +36,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Index({ templates }: any) {
 
     const { auth, flash } = usePage().props as any;
+    const userPermissions = auth.permissions;
+    const permissionName = userPermissions.map(permission => permission.name);
     const userId = auth.user.id;
 
     useEffect(() => {
@@ -56,9 +59,11 @@ export default function Index({ templates }: any) {
                         <EmptyDescription>No templates found</EmptyDescription>
                     </EmptyHeader>
                     <EmptyContent>
-                        <Link href={route('plan-templates.create')}>
-                            <Button>Add Template</Button>
-                        </Link>
+                        {hasPermission(permissionName, 'create-plan-templates') && (
+                            <Link href={route('plan-templates.create')}>
+                                <Button>Add Template</Button>
+                            </Link>
+                        )}
                     </EmptyContent>
                 </Empty>
             </AppLayout>
@@ -71,14 +76,18 @@ export default function Index({ templates }: any) {
             <div className="m-4 space-y-2">
                 <h1>Plan Templates</h1>
                 <div className="space-x-2">
-                    <Link href={route('plan-templates.create')}>
-                        <Button><Plus />Add Template</Button>
-                    </Link>
-                    <Link href={route('plan-templates.viewCreatedTemplates')}>
-                        <Button><Eye />View Created Templates</Button>
-                    </Link>
+                    {hasPermission(permissionName, 'create-plan-templates') && (
+                        <Link href={route('plan-templates.create')}>
+                            <Button><Plus />Add Template</Button>
+                        </Link>
+                    )}
+                    {hasPermission(permissionName, 'view-created-templates') && (
+                        <Link href={route('plan-templates.viewCreatedTemplates')}>
+                            <Button><Eye />View Created Templates</Button>
+                        </Link>
+                    )}
                 </div>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid gap-2">
                     {templates.map((template: any) => (
                         <Item className="w-100" variant="outline">
                             <ItemHeader>
