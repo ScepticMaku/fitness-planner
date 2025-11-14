@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('trainers', function (Blueprint $table) {
+        Schema::create('macronutrients', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('bio')->nullable();
-            $table->string('specialization');
-            $table->string('trainer_status')->default('active');
+            $table->foreignId('diet_guideline_id')->constrained('diet_guidelines')->onDelete('cascade');
+            $table->integer('protein_grams');
+            $table->integer('carbohydrates');
+            $table->integer('fats');
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('trainers');
+        Schema::dropIfExists('macronutrients');
     }
 };

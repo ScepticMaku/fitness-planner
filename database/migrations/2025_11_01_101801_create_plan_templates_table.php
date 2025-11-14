@@ -19,8 +19,6 @@ return new class extends Migration
             $table->string('fitness_level');
             $table->string('plan_type');
             $table->string('description');
-            $table->json('workout_structure');
-            $table->json('diet_guidelines');
             $table->timestamps();
         });
     }

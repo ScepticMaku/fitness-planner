@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('trainers', function (Blueprint $table) {
+        Schema::create('diet_guidelines', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('bio')->nullable();
-            $table->string('specialization');
-            $table->string('trainer_status')->default('active');
+            $table->foreignId('plan_template_id')->constrained('plan_templates')->onDelete('cascade');
+            $table->string('name');
+            $table->string('description');
+            $table->string('diet_type');
+            $table->integer('calorie_target');
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('trainers');
+        Schema::dropIfExists('diet_guidelines');
     }
 };

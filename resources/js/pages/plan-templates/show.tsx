@@ -26,7 +26,80 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Show({ userHasPlan, template }: any) {
+
+interface Exercise {
+    id: number;
+    name: string;
+    sets: number;
+    reps: string;
+    rest_seconds: number;
+}
+
+interface WorkoutStructure {
+    id: number;
+    name: string;
+    exercises: Exercise[];
+}
+
+interface Macronutrient {
+    id: number;
+    protein_grams: number;
+    carbohydrates: number;
+    fats: number;
+}
+
+interface DietGuideline {
+    id: number;
+    name: string;
+    description: string;
+    diet_type: string;
+    calorie_target: number;
+    macronutrient: Macronutrient[];
+    rule: Array<{
+        id: number;
+        name: string;
+    }>;
+    food_recommendation: Array<{
+        id: number;
+        name: string;
+    }>;
+    food_limitation: Array<{
+        id: number;
+        name: string;
+    }>;
+}
+
+interface User {
+    id: number;
+    name: string;
+}
+
+interface PlanTemplate {
+    id: number;
+    user_id: number;
+    title: string;
+    goal: string;
+    fitness_level: string;
+    plan_type: string;
+    description: string;
+    workout_structure: WorkoutStructure[];
+    diet_guideline: DietGuideline[];
+    user: User[];
+}
+
+interface UserHasPlan {
+    id: number;
+    user_id: number;
+    plan_template_id: number;
+    is_active: boolean;
+}
+
+interface PageProps {
+    userHasPlan: UserHasPlan;
+    template: PlanTemplate;
+}
+
+export default function Show({ userHasPlan, template }: PageProps) {
 
     const { auth } = usePage().props as any;
     const userId = auth.user.id;
@@ -35,8 +108,6 @@ export default function Show({ userHasPlan, template }: any) {
     const isPlanActive = hasPlan.map(h => h.is_active);
     const isSamePlan = hasPlan.map(h => h.plan_template_id == template.id);
 
-    console.log(isSamePlan);
-
     const { data } = useForm({
         title: template.title,
         goal: template.goal,
@@ -44,27 +115,11 @@ export default function Show({ userHasPlan, template }: any) {
         plan_type: template.plan_type,
         description: template.description,
         workout_structure: template.workout_structure,
-        diet_guidelines: template.diet_guidelines,
+        diet_guidelines: template.diet_guideline,
     });
-
-    const getWorkoutsArray = () => {
-        return Object.entries(data.workout_structure).map(([key, workout]) => ({
-            key,
-            ...workout
-        }));
-    };
-
-    const getGuidelinesArray = () => {
-        return Object.entries(data.diet_guidelines).map(([key, guideline]) => ({
-            key,
-            ...guideline
-        }))
-    };
 
     const { delete: destroy } = useForm();
     const { post, put } = useForm();
-    const guidelinesArray = getGuidelinesArray();
-    const workoutsArray = getWorkoutsArray();
 
     const handleDelete = (id: number, label: string) => {
         if (confirm(`Do you want to delete template ${label}?`)) {
@@ -109,162 +164,155 @@ export default function Show({ userHasPlan, template }: any) {
                     )}
                 </div>
                 <div>
-                    <Item variant="outline" >
-                        <ItemHeader>
-                            <div className="space-y-3">
-                                <ItemTitle className="text-[20px]"><strong>{data.title}</strong></ItemTitle>
-                                {template.user == null && (
-                                    <ItemDescription>Created by: Deleted Trainer</ItemDescription>
-                                )}
-                                {template.user != null && (
-                                    <ItemDescription>Created by: {template.user.name}</ItemDescription>
-                                )}
-                                <div>
-                                    <Label><strong>Goal</strong></Label>
-                                    <ItemTitle>{data.goal}</ItemTitle>
-                                </div>
-                                <div>
-                                    <Label><strong>Fitness Level</strong></Label>
-                                    <ItemTitle className="capitalize">{data.fitness_level}</ItemTitle>
-                                </div>
-                                <div>
-                                    <Label><strong>Plan Type</strong></Label>
-                                    <ItemTitle>{data.plan_type}</ItemTitle>
-                                </div>
-                                <div>
-                                    <ItemDescription>{data.description}</ItemDescription>
-                                </div>
-                            </div>
-                        </ItemHeader>
-                        <Separator />
-                        <ItemContent>
+                    <ItemHeader>
+                        <div className="space-y-3">
+                            <ItemTitle className="text-[20px]"><strong>{data.title}</strong></ItemTitle>
+                            {template.user == null && (
+                                <ItemDescription>Created by: Deleted Trainer</ItemDescription>
+                            )}
+                            {template.user != null && (
+                                <ItemDescription>Created by: {template.user.name}</ItemDescription>
+                            )}
                             <div>
-                                <div className="space-y-4">
-                                    {workoutsArray.map((workout) => (
-                                        <div key={workout.key} className="space-y-3">
-                                            <div className="space-y-2">
-                                                <ItemTitle className="text-[18px]"><strong>Workouts</strong></ItemTitle>
-                                                <div>
-                                                    <ItemTitle><strong>Workout Name</strong></ItemTitle>
-                                                    <Label>{workout.name}</Label>
-                                                </div>
-                                            </div>
-                                            <Separator />
-                                            <div className="space-y-2">
-                                                <ItemTitle className="text-[18px]"><strong>Exercises</strong></ItemTitle>
-                                                {workout.exercises.map((exercise) => (
-                                                    <div className="space-y-1">
-                                                        <div>
-                                                            <ItemTitle><strong>Exercise Name</strong></ItemTitle>
-                                                            <Label>{exercise.name}</Label>
-                                                        </div>
-                                                        <div>
-                                                            <ItemTitle><strong>Sets</strong></ItemTitle>
-                                                            <Label>{exercise.sets}</Label>                                                    </div>
-                                                        <div>
-                                                            <ItemTitle><strong>Reps</strong></ItemTitle>
-                                                            <Label>{exercise.reps}</Label>
-                                                        </div>
-                                                        <div>
-                                                            <ItemTitle><strong>Rest (seconds)</strong></ItemTitle>
-                                                            <Label>{exercise.rest_seconds}</Label>
-                                                        </div>
-                                                        <Separator />
-                                                    </div>
-                                                ))}
+                                <Label><strong>Goal</strong></Label>
+                                <ItemTitle>{data.goal}</ItemTitle>
+                            </div>
+                            <div>
+                                <Label><strong>Fitness Level</strong></Label>
+                                <ItemTitle className="capitalize">{data.fitness_level}</ItemTitle>
+                            </div>
+                            <div>
+                                <Label><strong>Plan Type</strong></Label>
+                                <ItemTitle>{data.plan_type}</ItemTitle>
+                            </div>
+                            <div>
+                                <ItemDescription>{data.description}</ItemDescription>
+                            </div>
+                        </div>
+                    </ItemHeader>
+                    <Separator />
+                    <ItemContent>
+                        <ItemTitle className="text-[20px]"><strong>Workouts</strong></ItemTitle>
+                        <div className="space-y-4 grid grid-cols-3 gap-3">
+                            {template.workout_structure.map((workout: any) => (
+                                <div key={workout.key}>
+                                    <Item variant="outline">
+                                        <div className="space-y-2">
+                                            <div>
+                                                <Label className="text-[20px]">{workout.name}</Label>
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </ItemContent>
-                        <ItemFooter>
-                            <div>
-                                <div className="space-y-4">
-                                    {guidelinesArray.map((guideline: any) => (
-                                        <div key={guideline.key}>
-                                            <div className="space-y-3">
-                                                <div>
-                                                    <ItemTitle className="text-[18px]"><strong>Diet Guidelines</strong></ItemTitle>
-                                                </div>
+                                        <Separator />
+                                        <div className="space-y-2">
+                                            <ItemTitle className="text-[20px]"><strong>Exercises</strong></ItemTitle>
+                                            {workout.exercise.map((exercise: any) => (
                                                 <div className="space-y-2">
-                                                    <div>
-                                                        <ItemTitle><strong>Name</strong></ItemTitle>
-                                                        <Label>{guideline.name}</Label>
-                                                    </div>
-                                                    <div>
-                                                        <ItemTitle><strong>Description</strong></ItemTitle>
-                                                        <p>{guideline.description}</p>
-                                                    </div>
-                                                    <div>
-                                                        <ItemTitle><strong>Diet Type</strong></ItemTitle>
-                                                        <Label>{guideline.diet_type}</Label>
-                                                    </div>
-                                                </div>
-                                                <Separator />
-                                                <div>
-                                                    <ItemTitle className="text-[16px]"><strong>Macronutrients</strong></ItemTitle>
-                                                </div>
-                                                {guideline.macronutrients.map((macro, macroIndex) => (
-                                                    <div>
+                                                    <Item variant="outline">
                                                         <div>
-                                                            <ItemTitle><strong>Protein Grams</strong></ItemTitle>
-                                                            <Label>{macro.protein_grams}</Label>
-                                                        </div>
-                                                        <div>
-                                                            <ItemTitle><strong>Carbohydrates</strong></ItemTitle>
-                                                            <Label>{macro.carbohydrates}</Label>
-                                                        </div>
-                                                        <div>
-                                                            <ItemTitle><strong>Fats</strong></ItemTitle>
-                                                            <Label>{macro.fats}</Label>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                                <Separator />
-                                                <div>
-                                                    <ItemTitle className="text-[16px]"><strong>Rules</strong></ItemTitle>
-                                                </div>
-                                                {guideline.rules.map((rule: any) => (
-                                                    <div>
-                                                        <div>
-                                                            <ItemTitle><strong>Rule</strong></ItemTitle>
-                                                            <Label>{rule.rule}</Label>
+                                                            <Label className="text-[20px]">{exercise.name}</Label>
                                                         </div>
                                                         <Separator />
-                                                    </div>
-                                                ))}
-                                                <div>
-                                                    <ItemTitle className="text-[16px]"><strong>Food Recommendations</strong></ItemTitle>
-                                                </div>
-                                                {guideline.foods_recommendations.map((recommendation, recommendationIndex) => (
-                                                    <div>
-                                                        <div>
-                                                            <ItemTitle><strong>Food</strong></ItemTitle>
-                                                            <Label>{recommendation.food}</Label>
+                                                        <div className="grid grid-flow-col grid-cols-3">
+                                                            <div>
+                                                                <ItemTitle><strong>Sets</strong></ItemTitle>
+                                                                <Label>{exercise.sets}</Label>
+                                                            </div>
+                                                            <div>
+                                                                <ItemTitle><strong>Reps</strong></ItemTitle>
+                                                                <Label>{exercise.reps}</Label>
+                                                            </div>
+                                                            <div>
+                                                                <ItemTitle><strong>Rest (seconds)</strong></ItemTitle>
+                                                                <Label>{exercise.rest_seconds}</Label>
+                                                            </div>
                                                         </div>
-                                                        <Separator />
-                                                    </div>
-                                                ))}
-                                                <div>
-                                                    <ItemTitle className="text-[16px]"><strong>Food Limitations</strong></ItemTitle>
+                                                    </Item>
                                                 </div>
-                                                {guideline.foods_limitations.map((limitation) => (
-                                                    <div>
-                                                        <div>
-                                                            <ItemTitle><strong>Food</strong></ItemTitle>
-                                                            <Label>{limitation.food}</Label>
-                                                        </div>
-                                                        <Separator />
-                                                    </div>
-                                                ))}
+                                            ))}
+                                        </div>
+                                    </Item>
+                                </div>
+                            ))}
+                        </div>
+                    </ItemContent>
+                    <Separator />
+                    <ItemFooter className="flex">
+                        <div className="grow">
+                            {template.diet_guideline.map((guideline: any) => (
+                                <div key={guideline.key}>
+                                    <div className="space-y-3">
+                                        <div>
+                                            <ItemTitle className="text-[20px]"><strong>Diet Guidelines</strong></ItemTitle>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <div>
+                                                <ItemTitle><strong>Name</strong></ItemTitle>
+                                                <Label>{guideline.name}</Label>
+                                            </div>
+                                            <div>
+                                                <ItemTitle><strong>Description</strong></ItemTitle>
+                                                <p>{guideline.description}</p>
+                                            </div>
+                                            <div>
+                                                <ItemTitle><strong>Diet Type</strong></ItemTitle>
+                                                <Label>{guideline.diet_type}</Label>
                                             </div>
                                         </div>
-                                    ))}
+                                        <Separator />
+                                        <div>
+                                            <ItemTitle className="text-[18px]"><strong>Macronutrients</strong></ItemTitle>
+                                        </div>
+                                        <div className="grid grid-cols-3">
+                                            <div>
+                                                <ItemTitle><strong>Protein Grams</strong></ItemTitle>
+                                                <Label>{guideline.macronutrient.protein_grams}</Label>
+                                            </div>
+                                            <div>
+                                                <ItemTitle><strong>Carbohydrates</strong></ItemTitle>
+                                                <Label>{guideline.macronutrient.carbohydrates}</Label>
+                                            </div>
+                                            <div>
+                                                <ItemTitle><strong>Fats</strong></ItemTitle>
+                                                <Label>{guideline.macronutrient.fats}</Label>
+                                            </div>
+                                        </div>
+                                        <Separator />
+                                        <div>
+                                            <ItemTitle className="text-[18px]"><strong>Rules</strong></ItemTitle>
+                                        </div>
+                                        {guideline.rule.map((rule: any) => (
+                                            <Item variant="outline">
+                                                <div>
+                                                    <Label>{rule.name}</Label>
+                                                </div>
+                                            </Item>
+                                        ))}
+                                        <div>
+                                            <ItemTitle className="text-[18px]"><strong>Food Recommendations</strong></ItemTitle>
+                                        </div>
+                                        {guideline.food_recommendation.map((recommendation: any) => (
+                                            <Item variant="outline">
+                                                <div>
+                                                    <Label>{recommendation.name}</Label>
+                                                </div>
+                                            </Item>
+                                        ))}
+                                        <div>
+                                            <ItemTitle className="text-[16px]"><strong>Food Limitations</strong></ItemTitle>
+                                        </div>
+                                        {guideline.food_limitation.map((limitation: any) => (
+                                            <Item variant="outline">
+                                                <div>
+                                                    <Label>{limitation.name}</Label>
+                                                </div>
+                                            </Item>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        </ItemFooter>
-                    </Item>
+                            ))}
+                        </div>
+                    </ItemFooter>
+
                 </div >
             </div>
         </AppLayout >

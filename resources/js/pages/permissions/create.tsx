@@ -63,6 +63,8 @@ export default function Create() {
                                 <SelectItem value="fitness-plan" key="fitness-plan">Fitness Plan</SelectItem>
                                 <SelectItem value="schedules" key="schedules">Schedules</SelectItem>
                                 <SelectItem value="trainers" key="trainers">Trainers</SelectItem>
+                                <SelectItem value="workout-progress" key="workout-progress">Workout Progress</SelectItem>
+                                <SelectItem value="appointments" key="appointments">Appointments</SelectItem>
                             </SelectContent>
                         </Select>
                         <InputError

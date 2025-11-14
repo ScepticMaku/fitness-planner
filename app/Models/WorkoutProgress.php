@@ -4,22 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UserHasPlan extends Model
+class WorkoutProgress extends Model
 {
     protected $fillable = [
         'user_id',
-        'plan_template_id',
+        'exercise_id',
         'workout_structure_id',
         'diet_guideline_id',
-        'is_active'
+        'status'
     ];
 
     public function user() {
         return $this->belongsTo(User::class);
     }
 
-    public function planTemplate() {
-        return $this->belongsTo(PlanTemplate::class);
+    public function exercise() {
+        return $this->belongsTo(Exercise::class);
     }
 
     public function workoutStructure() {
@@ -28,5 +28,13 @@ class UserHasPlan extends Model
 
     public function dietGuideline() {
         return $this->belongsTo(DietGuideline::class);
+    }
+
+    public function exerciseProgress() {
+        return $this->hasMany(ExerciseProgress::class);
+    }
+
+    public function workoutLog() {
+        return $this->hasMany(WorkoutLog::class);
     }
 }

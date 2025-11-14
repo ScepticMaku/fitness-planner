@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Exercise;
 use App\Models\PlanTemplate;
 use App\Models\UserHasPlan;
+use App\Models\WorkoutProgress;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserHasPlanController extends Controller
@@ -22,9 +25,11 @@ class UserHasPlanController extends Controller
         return redirect()->back()->with('message', 'Plan selection failed.');
     }
 
-    public function start(string $id) {
+    public function start(Request $request, string $id) {
         $userId = Auth::user()->id;
         $plans = UserHasPlan::get();
+        $exerciseId = Exercise::where('workout_structure_id', $request->workout_structure_id)->first()->id;
+        $exercises = Exercise::where('workout_structure_id', $request->workout_structure_id)->get();
 
         foreach ($plans as $plan) {
             if($plan->user_id == $userId) {
@@ -35,11 +40,29 @@ class UserHasPlanController extends Controller
         }
 
         if ($foundPlan) {
+            $request->validate([
+                'workout_structure_id' => 'required|integer',
+                'diet_guideline_id' => 'required|integer',
+            ]);
+
             $foundPlan->update([
-                'user_id' => $userId,
-                'plan_template_id' => $id,
+                'workout_structure_id' => $request->workout_structure_id,
+                'diet_guideline_id' => $request->diet_guideline_id,
                 'is_active' => 1
             ]);
+
+            $workoutProgress = WorkoutProgress::create([
+                'user_id' => $userId,
+                'exercise_id' => $exerciseId,
+                'workout_structure_id' => $request->workout_structure_id,
+                'diet_guideline_id' => $request->diet_guideline_id
+            ]);
+
+            foreach($exercises as $exercise) {
+                $workoutProgress->exerciseProgress()->create([
+                    'exercise_id' => $exercise->id,
+                ]);
+            }
 
             return redirect()->route('fitness-plan.index')->with('message', 'Plan successfully started!');
         }

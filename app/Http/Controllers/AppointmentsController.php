@@ -2,42 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PlanTemplate;
-use App\Models\UserHasPlan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
-class FitnessPlanController extends Controller
+class AppointmentsController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $userId = Auth::user()->id;
-        $plans = UserHasPlan::get();
-        $template = PlanTemplate::get();
-
-        foreach ($plans as $plan) {
-            if($plan->user_id == $userId) {
-                $planTemplateId = $plan->plan_template_id;
-                $template = PlanTemplate::with(
-                    'user',
-                    'workoutStructure.exercise',
-                    'dietGuideline.rule',
-                    'dietGuideline.macronutrient',
-                    'dietGuideline.foodRecommendation',
-                    'dietGuideline.foodLimitation',
-                )->find($planTemplateId);
-                break;
-            }
-        }
-
-        return Inertia::render('fitness-plan/index',[
-            'plans' => $plans,
-            'template' => $template,
-        ]);
+        return Inertia::render('appointments/index');
     }
 
     /**
@@ -61,7 +36,9 @@ class FitnessPlanController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return Inertia::render('appointments/show', [
+            'id', $id,
+        ]);
     }
 
     /**

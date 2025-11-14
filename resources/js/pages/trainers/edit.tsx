@@ -27,8 +27,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Edit({ trainer }: any) {
 
-    console.log(trainer);
-
     const { data, setData, put, errors } = useForm({
         name: trainer.user.name,
         specialization: trainer.specialization,

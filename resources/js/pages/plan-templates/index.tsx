@@ -74,7 +74,6 @@ export default function Index({ templates }: any) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Plan Templates" />
             <div className="m-4 space-y-2">
-                <h1>Plan Templates</h1>
                 <div className="space-x-2">
                     {hasPermission(permissionName, 'create-plan-templates') && (
                         <Link href={route('plan-templates.create')}>

@@ -13,7 +13,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutGrid, CalendarClock, NotebookPen, UserCog, UserPen, Users, LayoutTemplate } from 'lucide-react';
+import { LayoutGrid, Dumbbell, CalendarClock, NotebookPen, UserCog, UserPen, Users, LayoutTemplate } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -23,10 +23,10 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'Plan Templates',
-        href: '/plan-templates',
-        icon: LayoutTemplate,
-        permission: 'access-plan-templates-module'
+        title: 'Workout Progress',
+        href: '/workout-progress',
+        icon: Dumbbell,
+        permission: 'access-workout-progress-module',
     },
     {
         title: 'Fitness Plan',
@@ -35,10 +35,22 @@ const mainNavItems: NavItem[] = [
         permission: 'access-fitness-plan-module',
     },
     {
+        title: 'Appointments',
+        href: '/appointments',
+        icon: CalendarClock,
+        permission: 'access-appointments-module',
+    },
+    {
         title: 'Schedules',
         href: '/schedules',
         icon: CalendarClock,
         permission: 'access-schedules-module',
+    },
+    {
+        title: 'Plan Templates',
+        href: '/plan-templates',
+        icon: LayoutTemplate,
+        permission: 'access-plan-templates-module'
     },
     {
         title: 'Trainers',

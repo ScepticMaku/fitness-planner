@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { type BreadcrumbItem } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
 import { toast } from 'sonner';
+import CalendarApp from '@/components/calendar-app';
 import {
     Empty,
     EmptyContent,
@@ -32,6 +33,7 @@ export default function Index() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Schedules" />
+            <CalendarApp />
         </AppLayout>
     );
 }
