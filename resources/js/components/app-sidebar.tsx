@@ -64,18 +64,6 @@ const mainNavItems: NavItem[] = [
         icon: Users,
         permission: 'access-users-module',
     },
-    {
-        title: 'Roles',
-        href: '/roles',
-        icon: UserCog,
-        permission: 'access-roles-module',
-    },
-    {
-        title: 'Permissions',
-        href: '/permissions',
-        icon: UserPen,
-        permission: 'access-permissions-module',
-    },
 ];
 
 export function AppSidebar() {

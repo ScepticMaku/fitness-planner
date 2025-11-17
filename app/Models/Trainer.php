@@ -16,4 +16,12 @@ class Trainer extends Model
     public function user() {
         return $this->belongsTo(User::class);
     }
+
+    public function workoutSession() {
+        return $this->belongsTo(WorkoutSession::class);
+    }
+
+    public function availabilitySlots() {
+        return $this-> hasMany(AvailabilitySlot::class);
+    }
 }

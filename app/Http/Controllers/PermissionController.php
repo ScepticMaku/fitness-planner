@@ -34,13 +34,11 @@ class PermissionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'module' => 'required|string',
             'label' => 'required|string',
             'description' => 'nullable|string'
         ]);
 
         $permission = Permission::create([
-            'module' => $request->module,
             'label' => $request->label,
             'name' => Str::slug($request->label),
             'description' => $request->description

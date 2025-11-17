@@ -1,17 +1,11 @@
 import AppLayout from '@/layouts/app-layout';
 import { useEffect } from 'react';
 import { type BreadcrumbItem } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { toast } from 'sonner';
 import CalendarApp from '@/components/calendar-app';
-import {
-    Empty,
-    EmptyContent,
-    EmptyDescription,
-    EmptyHeader,
-    EmptyMedia,
-    EmptyTitle,
-} from "@/components/ui/empty"
+import { Button } from '@/components/ui/button';
+import { Eye } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -22,7 +16,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Index() {
 
-    const { flash } = usePage().props as any;
+    const { auth, flash } = usePage().props as any;
+    const userRole = auth.roles;
 
     useEffect(() => {
         if (flash.message) {
@@ -33,7 +28,16 @@ export default function Index() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Schedules" />
-            <CalendarApp />
+            <div className="m-4">
+                {userRole == 'trainer' && (
+                    <div className="mb-4">
+                        <Link href={route('trainer.availability.index')}>
+                            <Button><Eye />Manage Slots</Button>
+                        </Link>
+                    </div>
+                )}
+                <CalendarApp />
+            </div>
         </AppLayout>
     );
 }

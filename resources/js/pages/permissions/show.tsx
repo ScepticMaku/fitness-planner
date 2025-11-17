@@ -43,19 +43,6 @@ export default function Edit({ permission }: any) {
             </div>
             <div className="ml-4 mr-4">
                 <div>
-                    <Label htmlFor="module">Module</Label>
-                    <Select value={data.module || ''} onValueChange={(e) => setData('module', e)} disabled>
-                        <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Module" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="users" key="users">Users</SelectItem>
-                            <SelectItem value="roles" key="roles">Roles</SelectItem>
-                            <SelectItem value="permissions" key="permissions">Permissions</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-                <div>
                     <Label htmlFor="label">Label</Label>
                     <Input
                         type="text"

@@ -9,6 +9,7 @@ class ExerciseProgress extends Model
     protected $fillable = [
         'workout_progress_id',
         'exercise_id',
+        'status'
     ];
 
     public function workoutProgress() {

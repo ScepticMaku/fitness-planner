@@ -96,9 +96,6 @@ export default function Dashboard() {
                             </ItemContent>
                         </Item>
                     </div>
-                    <div>
-                        <ChartAreaDefault />
-                    </div>
                 </div>
             </AppLayout>
         );

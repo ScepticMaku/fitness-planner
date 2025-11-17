@@ -28,6 +28,12 @@ class UserHasPlanController extends Controller
     public function start(Request $request, string $id) {
         $userId = Auth::user()->id;
         $plans = UserHasPlan::get();
+
+        $request->validate([
+            'workout_structure_id' => 'required|integer',
+            'diet_guideline_id' => 'required|integer',
+        ]);
+
         $exerciseId = Exercise::where('workout_structure_id', $request->workout_structure_id)->first()->id;
         $exercises = Exercise::where('workout_structure_id', $request->workout_structure_id)->get();
 
@@ -40,10 +46,6 @@ class UserHasPlanController extends Controller
         }
 
         if ($foundPlan) {
-            $request->validate([
-                'workout_structure_id' => 'required|integer',
-                'diet_guideline_id' => 'required|integer',
-            ]);
 
             $foundPlan->update([
                 'workout_structure_id' => $request->workout_structure_id,

@@ -59,7 +59,6 @@ export default function Index({ permissions }: any) {
                         <TableRow>
                             <TableHead className="w-[100px]">ID</TableHead>
                             <TableHead>Label</TableHead>
-                            <TableHead>Module</TableHead>
                             <TableHead className="text-right">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -68,7 +67,6 @@ export default function Index({ permissions }: any) {
                             <TableRow>
                                 <TableCell>{id}</TableCell>
                                 <TableCell>{label}</TableCell>
-                                <TableCell className="capitalize">{module}</TableCell>
                                 <TableCell className="text-right space-x-2">
                                     {hasPermission(permissionNames, 'view-permissions') && (
                                         <Link href={route('permissions.show', id)}>

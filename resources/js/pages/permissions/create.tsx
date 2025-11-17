@@ -50,28 +50,6 @@ export default function Create() {
             <div className="ml-4 mr-4">
                 <form className="space-y-2" onSubmit={handleSubmit}>
                     <div>
-                        <Label htmlFor="module">Module</Label>
-                        <Select value={data.module || ''} onValueChange={(e) => setData('module', e)}>
-                            <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Module" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="users" key="users">Users</SelectItem>
-                                <SelectItem value="roles" key="roles">Roles</SelectItem>
-                                <SelectItem value="permissions" key="permissions">Permissions</SelectItem>
-                                <SelectItem value="plan-templates" key="plan-templates">Plan Templates</SelectItem>
-                                <SelectItem value="fitness-plan" key="fitness-plan">Fitness Plan</SelectItem>
-                                <SelectItem value="schedules" key="schedules">Schedules</SelectItem>
-                                <SelectItem value="trainers" key="trainers">Trainers</SelectItem>
-                                <SelectItem value="workout-progress" key="workout-progress">Workout Progress</SelectItem>
-                                <SelectItem value="appointments" key="appointments">Appointments</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <InputError
-                            message={errors.module}
-                        />
-                    </div>
-                    <div>
                         <Label htmlFor=" label">Label</Label>
                         <Input
                             type="text"

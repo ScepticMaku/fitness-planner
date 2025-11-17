@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appointment;
 use App\Models\DietGuideline;
 use App\Models\Exercise;
 use App\Models\ExerciseProgress;
+use App\Models\Trainer;
+use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\PlanTemplate as ModelsPlanTemplate;
 use App\Models\UserHasPlan;
 use App\Models\WorkoutLog;
 use App\Models\WorkoutProgress;
@@ -22,11 +24,14 @@ class WorkoutProgressController extends Controller
     public function index()
     {
         $userId = Auth::user()->id;
-
-        $progress = WorkoutProgress::where('user_id', $userId)->first();
+        $plans = UserHasPlan::with('user')->get();
+        $progress = WorkoutProgress::where('user_id', $userId)->where('status', 'in-progress')->first();
+        $exercises = ExerciseProgress::with('exercise')->get();
+        $allExercises = Exercise::get();
+        $appointments = Appointment::with('user')->where('user_id', $userId)->get();
 
         if($progress != null) {
-            $workoutLog = WorkoutLog::with('exercise')->where('workout_progress_id', $progress->id)->get();
+            $workoutLog = WorkoutLog::with('exercise', 'trainer.user', 'user', 'workoutProgress')->where('workout_progress_id', $progress->id)->get();
             $exercises = ExerciseProgress::with('exercise')->where('workout_progress_id', $progress->id)->get();
 
             $exerciseId = $progress->exercise_id;
@@ -38,19 +43,30 @@ class WorkoutProgressController extends Controller
             $dietGuidelineId = DietGuideline::with('macronutrient', 'rule', 'foodRecommendation', 'foodLimitation')->find($dietGuidelineId);
 
             return Inertia::render('workout-progress/index', [
+                'plans' => $plans,
                 'currentExercise' => $currentExercise,
                 'workoutLog' => $workoutLog,
                 'exercises' => $exercises,
                 'workoutStructure' => $workoutStructure,
-                'dietGuideline' => $dietGuidelineId
+                'dietGuideline' => $dietGuidelineId,
+                'appointments' => $appointments,
+                'allExercises' => [],
+                'progress' => $progress
             ]);
         }
+
+        $appointments = Appointment::with('user')->get();
+
         return Inertia::render('workout-progress/index', [
+            'plans' => $plans,
             'currentExercise' => [],
             'workoutLog' => [],
-            'exercises' => [],
+            'exercises' => $exercises,
             'workoutStructure' => [],
-            'dietGuideline' => []
+            'allExercises' => $allExercises,
+            'dietGuideline' => [],
+            'appointments' => $appointments,
+            'progress' => []
         ]);
     }
 
@@ -59,7 +75,25 @@ class WorkoutProgressController extends Controller
      */
     public function create()
     {
-        return Inertia::render('workout-progress/book-session');
+        /*
+        $userId = Auth::user()->id;
+        $progress = WorkoutProgress::where('user_id', $userId)->first();
+        $availableTrainers = Trainer::with('user')->where('trainer_status', 'active')->get();
+
+        if($progress != null) {
+            $exerciseId = $progress->exercise_id;
+            $currentExercise = Exercise::find($exerciseId);
+
+            return Inertia::render('workout-progress/book-session', [
+                'currentExercise' => $currentExercise,
+                'availableTrainers' => $availableTrainers
+            ]);
+        }
+        return Inertia::render('workout-progress/book-session', [
+            'currentExercise' => [],
+            'availableTrainers' => $availableTrainers
+        ]);
+*/
     }
 
     /**
@@ -75,8 +109,42 @@ class WorkoutProgressController extends Controller
      */
     public function show(string $id)
     {
-        return Inertia::render('workout-progress/client-progress');
+        $userId = User::find($id)->id;
+        $user = User::find($id);
+        $progress = WorkoutProgress::where('user_id', $userId)->first();
+        $exercises = ExerciseProgress::with('exercise')->get();
+
+        if($progress != null) {
+            $workoutLog = WorkoutLog::with('exercise', 'trainer.user', 'user', 'workoutProgress')->where('workout_progress_id', $progress->id)->get();
+            $exercises = ExerciseProgress::with('exercise')->where('workout_progress_id', $progress->id)->get();
+
+            $exerciseId = $progress->exercise_id;
+            $workoutStructureId = $progress->workout_structure_id;
+            $dietGuidelineId = $progress->diet_guideline_id;
+
+            $currentExercise = Exercise::find($exerciseId);
+            $workoutStructure = WorkoutStructure::find($workoutStructureId);
+            $dietGuidelineId = DietGuideline::with('macronutrient', 'rule', 'foodRecommendation', 'foodLimitation')->find($dietGuidelineId);
+
+            return Inertia::render('workout-progress/client-progress', [
+                'currentExercise' => $currentExercise,
+                'workoutLog' => $workoutLog,
+                'exercises' => $exercises,
+                'workoutStructure' => $workoutStructure,
+                'dietGuideline' => $dietGuidelineId,
+                'user' => $user,
+            ]);
+        }
+        return Inertia::render('workout-progress/client-progress', [
+            'currentExercise' => [],
+            'workoutLog' => [],
+            'exercises' => $exercises,
+            'workoutStructure' => [],
+            'dietGuideline' => [],
+            'user' => $user
+        ]);
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -100,5 +168,22 @@ class WorkoutProgressController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function viewRequests() {
+        $userId = Auth::user()->id;
+        $appointments = Appointment::where('user_id', $userId)->with('user', 'slot', 'trainer', 'exercise')->get();
+
+        return Inertia::render('workout-progress/view-pending-requests', [
+            'appointments' => $appointments
+        ]);
+    }
+
+    public function viewDetails(string $id) {
+        $appointment = Appointment::with('user', 'slot', 'trainer', 'exercise')->find($id);
+
+        return Inertia::render('workout-progress/view-details', [
+            'appointment' => $appointment
+        ]);
     }
 }

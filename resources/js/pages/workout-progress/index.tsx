@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Book, Eye } from 'lucide-react';
+import { NotebookPen, Check, Book, Eye, ArchiveX, Clock } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from '@/components/ui/separator';
@@ -36,18 +36,35 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Index({ currentExercise, workoutLog, exercises, workoutStructure, dietGuideline }: any) {
+export default function Index({ allExercises, progress, appointments, plans, currentExercise, workoutLog, exercises, workoutStructure, dietGuideline }: any) {
+
+    const appointmentsList = appointments || [];
+
+    const appointmentExercises = appointmentsList.filter(a => a.exercise_id == currentExercise.id);
+    const hasApprovedRequest = appointmentExercises.filter(a => a.status == 'approved');
+
+    let plan = plans || [];
 
     const { auth } = usePage().props as any;
     const userRole = auth.roles;
+    const userId = auth.user.id;
+    const hasPlan = plan.filter(p => p.user_id == userId);
+    const isPlanActive = hasPlan.map(h => h.is_active);
+
+    const completedExercises = exercises.filter(e => e.status == 'completed').length;
+    const uncompletedExercises = exercises.filter(e => e.status == 'uncompleted').length;
+    const exerciseLength = exercises.length;
+    const progressValue = (completedExercises / exerciseLength) * 100;
+
 
     const [searchValue, setSearchValue] = useState('');
-    const [showList, setShowList] = useState(false);
+    const [showList, setShowList] = useState(true);
 
-    const clients = [
-        'John Doe',
-        'Jane Smith',
-    ];
+    console.log(progress);
+
+    const clients = appointments.filter(appointment => appointment.status == 'approved');
+
+    console.log(plan);
 
     const handleInputChange = (e) => {
         const value = e.target.value;
@@ -56,8 +73,30 @@ export default function Index({ currentExercise, workoutLog, exercises, workoutS
     }
 
     const filteredClients = clients.filter(client =>
-        client.toLowerCase().includes(searchValue.toLowerCase())
+        client.user.name.toLowerCase().includes(searchValue.toLowerCase())
     );
+
+    if (userRole == 'member' && isPlanActive == 0 && hasPlan == 0) {
+        return (
+            <AppLayout breadcrumbs={breadcrumbs}>
+                <Head title="Schedules" />
+                <Empty>
+                    <EmptyHeader>
+                        <EmptyMedia variant="icon">
+                            <ArchiveX />
+                        </EmptyMedia>
+                        <EmptyTitle>No Active Plan</EmptyTitle>
+                        <EmptyDescription>You currenty have no active plan.</EmptyDescription>
+                    </EmptyHeader>
+                    <EmptyContent>
+                        <Link href={route('plan-templates.index')}>
+                            <Button>Search Plans</Button>
+                        </Link>
+                    </EmptyContent>
+                </Empty>
+            </AppLayout>
+        );
+    }
 
     if (userRole == 'trainer') {
         return (
@@ -75,17 +114,17 @@ export default function Index({ currentExercise, workoutLog, exercises, workoutS
                     </div>
                     <Label>Clients List</Label>
                     {showList && filteredClients.length > 0 && (
-                        <div className="grid grid-flow-col grid-cols-2 gap-2">
+                        <div className="grid grid-flow-col grid-cols-3 gap-2">
                             {filteredClients.map((client, index) => (
                                 <div key={index}>
                                     <Item variant="outline">
                                         <ItemHeader>
-                                            <Label>{client}</Label>
-                                            <Link href={route('workout-progress.show', index)}>
+                                            <Label>{client.user.name}</Label>
+                                            <Link href={route('workout-progress.show', client.user.id)}>
                                                 <Button><Eye />View Progress</Button>
                                             </Link>
                                         </ItemHeader>
-                                        r                                   </Item>
+                                    </Item>
                                 </div>
                             ))}
                         </div>
@@ -93,7 +132,29 @@ export default function Index({ currentExercise, workoutLog, exercises, workoutS
                 </div>
             </AppLayout>
         )
-    } else {
+    }
+
+    if (progress.length == 0) {
+        return (
+            <AppLayout breadcrumbs={breadcrumbs}>
+                <Head title="Schedules" />
+                <Empty>
+                    <EmptyHeader>
+                        <EmptyMedia variant="icon">
+                            <ArchiveX />
+                        </EmptyMedia>
+                        <EmptyTitle>No Workout</EmptyTitle>
+                        <EmptyDescription>You have successfully completed your workout plan.</EmptyDescription>
+                    </EmptyHeader>
+                    <EmptyContent>
+                        <Link href={route('fitness-plan.index')}>
+                            <Button>Fitness Plan</Button>
+                        </Link>
+                    </EmptyContent>
+                </Empty>
+            </AppLayout>
+        );
+
     }
 
     return (
@@ -110,9 +171,30 @@ export default function Index({ currentExercise, workoutLog, exercises, workoutS
                                     <ItemTitle>Current Exercise</ItemTitle>
                                     <Label><strong>{currentExercise.name}</strong></Label>
                                 </div>
-                                <Link href={route('workout-progress.create')}>
-                                    <Button><Book />Book a Session</Button>
-                                </Link>
+                                {(hasApprovedRequest == 0 && progress.status == 'completed') && (
+                                    <div>
+                                        <Badge><Clock /><Check />Workout Completed</Badge>
+                                        <Link className="ml-2" href={route('fitness-plan.index')}>
+                                            <Button><NotebookPen />Fitness Plan</Button>
+                                        </Link>
+                                    </div>
+
+                                )}
+                                {(hasApprovedRequest == 0 && progress.status == 'in-progress') && (
+                                    <div>
+                                        <Link href={route('workout-progress.view-requests')}>
+                                            <Button><Eye />View Pending Requests</Button>
+                                        </Link>
+                                        <Link className="ml-2" href={route('workout-sessions.create')}>
+                                            <Button><Book />Book a Session</Button>
+                                        </Link>
+                                    </div>
+                                )}
+                                {hasApprovedRequest.length == 1 && (
+                                    <div>
+                                        <Badge><Clock />Session in progress</Badge>
+                                    </div>
+                                )}
                             </ItemHeader>
                             <ItemContent>
                                 <div className="grid grid-flow-col gap-3">
@@ -133,15 +215,15 @@ export default function Index({ currentExercise, workoutLog, exercises, workoutS
                         </Item>
                         <Item variant="outline">
                             <ItemTitle>Completed Exercises:</ItemTitle>
-                            <Label><strong>1/4</strong></Label>
-                            <Progress value={50} />
+                            <Label><strong>{completedExercises}/{exerciseLength}</strong></Label>
+                            <Progress value={progressValue} />
                         </Item>
                     </div>
                     <div>
                         <Item variant="outline">
                             <ItemHeader>
                                 <ItemTitle>Exercise Progress</ItemTitle>
-                                <Label>Completed: 0/4</Label>
+                                <Label>Completed: {completedExercises}/{exerciseLength}</Label>
                             </ItemHeader>
                             <ItemContent>
                                 <ScrollArea className="h-44">
@@ -162,7 +244,7 @@ export default function Index({ currentExercise, workoutLog, exercises, workoutS
                             </ItemContent>
                         </Item>
                     </div>
-                    <div >
+                    <div>
                         <div className="space-y-3">
                             <div>
                                 <ItemTitle className="text-[20px]"><strong>Diet Guidelines</strong></ItemTitle>
@@ -251,17 +333,19 @@ export default function Index({ currentExercise, workoutLog, exercises, workoutS
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
-                                            <TableHead className="w-[100px]">Exercise</TableHead>
-                                            <TableHead className="text-right">Amount</TableHead>
+                                            <TableHead >Exercise</TableHead>
+                                            <TableHead>Date Completed</TableHead>
+                                            <TableHead >Trainer</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        <TableRow>
-                                            <TableCell className="font-medium">INV001</TableCell>
-                                            <TableCell>Paid</TableCell>
-                                            <TableCell>Credit Card</TableCell>
-                                            <TableCell className="text-right">$250.00</TableCell>
-                                        </TableRow>
+                                        {workoutLog.map(workout => (
+                                            <TableRow>
+                                                <TableCell >{workout.exercise.name}</TableCell>
+                                                <TableCell>{workout.date_completed}</TableCell>
+                                                <TableCell>{workout.trainer.user.name}</TableCell>
+                                            </TableRow>
+                                        ))}
                                     </TableBody>
                                 </Table>
                             </Item>

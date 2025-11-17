@@ -107,9 +107,6 @@ interface PageProps {
 
 export default function Index({ plans, template }: any) {
 
-    let selectedWorkout = null;
-    let selectedGuideline = null;
-
     const { auth, flash } = usePage().props as any;
     const userId = auth.user.id;
     const hasPlan = plans.filter(p => p.user_id == userId);
@@ -174,7 +171,7 @@ export default function Index({ plans, template }: any) {
                         <EmptyMedia variant="icon">
                             <ArchiveX />
                         </EmptyMedia>
-                        <EmptyTitle>Plan Empty</EmptyTitle>
+                        <EmptyTitle>No Plan</EmptyTitle>
                         <EmptyDescription>You currenty have no active plan.</EmptyDescription>
                     </EmptyHeader>
                     <EmptyContent>

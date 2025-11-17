@@ -7,10 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Schedule extends Model
 {
     protected $fillable = [
-        'trainer_id',
-        'member_id',
-        'start_date',
-        'end_date',
+        'user_id',
+        'schedule_date',
+        'schedule_time',
         'status'
     ];
 

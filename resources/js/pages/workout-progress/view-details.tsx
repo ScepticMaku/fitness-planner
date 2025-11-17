@@ -1,7 +1,7 @@
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Check, X, ChevronLeft } from 'lucide-react';
 import {
@@ -26,9 +26,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Index({ appointment }: any) {
+export default function viewDetails({ appointment }: any) {
 
-    const { put } = useForm();
 
     const formatTimeOnly = (dateTimeString) => {
         const date = new Date(dateTimeString);
@@ -36,28 +35,21 @@ export default function Index({ appointment }: any) {
             hour: '2-digit',
             minute: '2-digit',
             hour12: false,
-            timeZone: 'UTC',
+            timeZone: 'UTC'
         });
     };
 
-    const approveAppointment = (id: number) => {
-        if (confirm('Do you want to approve this appointment?')) {
-            put(route('appointments.approve', id));
-        }
-    }
+    console.log(appointment.slot.start_time);
 
-    const declineAppointment = (id: number) => {
-        if (confirm('Do you want to decline this appointment?')) {
-            put(route('appointments.decline', id));
-        }
-    }
+    console.log(formatTimeOnly(appointment.slot.start_time));
+
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Workout Progress" />
             <div className="m-4">
                 <div className="mb-4">
-                    <Link href={route('appointments.index')}>
+                    <Link href={route('workout-progress.view-requests')}>
                         <Button><ChevronLeft /> Back</Button>
                     </Link>
                 </div>
@@ -96,12 +88,6 @@ export default function Index({ appointment }: any) {
                         </div>
                     </ItemFooter>
                 </Item>
-                {appointment.status == 'pending' && (
-                    <div className="mt-4 ">
-                        <Button className="mr-3" onClick={() => approveAppointment(appointment.id)}><Check />Approve Appointment</Button>
-                        <Button onClick={() => declineAppointment(appointment.id)}><X />Decline</Button>
-                    </div>
-                )}
             </div>
         </AppLayout>
     )
