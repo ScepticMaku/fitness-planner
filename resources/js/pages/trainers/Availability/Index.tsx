@@ -1,4 +1,3 @@
-// resources/js/Pages/Trainer/Availability/Index.jsx
 import React, { useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import { type BreadcrumbItem } from '@/types';
@@ -45,16 +44,10 @@ export default function AvailabilityIndex({ slots, trainer }) {
                             </div>
                             <div className="flex gap-3">
                                 <Link
-                                    href={route('trainer.availability.create')}
-                                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                                >
-                                    Add Single Slot
-                                </Link>
-                                <Link
                                     href={route('trainer.availability.bulk-create')}
                                     className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
                                 >
-                                    Bulk Add Slots
+                                    Add Slots
                                 </Link>
                             </div>
                         </div>
@@ -105,7 +98,8 @@ export default function AvailabilityIndex({ slots, trainer }) {
                                                         weekday: 'long',
                                                         year: 'numeric',
                                                         month: 'long',
-                                                        day: 'numeric'
+                                                        day: 'numeric',
+                                                        timeZone: 'UTC',
                                                     })}
                                                 </h3>
                                             </div>
@@ -124,7 +118,8 @@ export default function AvailabilityIndex({ slots, trainer }) {
                                                                     {new Date(slot.start_time).toLocaleTimeString('en-US', {
                                                                         hour: 'numeric',
                                                                         minute: '2-digit',
-                                                                        hour12: true
+                                                                        hour12: true,
+                                                                        timeZone: 'UTC'
                                                                     })}
                                                                 </div>
                                                                 <div className="text-sm">

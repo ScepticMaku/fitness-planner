@@ -40,6 +40,7 @@ export default function Index({ appointment }: any) {
         });
     };
 
+
     const approveAppointment = (id: number) => {
         if (confirm('Do you want to approve this appointment?')) {
             put(route('appointments.approve', id));

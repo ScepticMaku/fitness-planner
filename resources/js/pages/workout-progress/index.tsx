@@ -52,7 +52,6 @@ export default function Index({ allExercises, progress, appointments, plans, cur
     const isPlanActive = hasPlan.map(h => h.is_active);
 
     const completedExercises = exercises.filter(e => e.status == 'completed').length;
-    const uncompletedExercises = exercises.filter(e => e.status == 'uncompleted').length;
     const exerciseLength = exercises.length;
     const progressValue = (completedExercises / exerciseLength) * 100;
 

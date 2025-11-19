@@ -12,6 +12,7 @@ use App\Http\Controllers\WorkoutProgressController;
 use App\Http\Controllers\AppointmentsController;
 use App\Http\Controllers\WorkoutSessionController;
 use App\Http\Controllers\TrainerAvailabilityController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -23,9 +24,13 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    /*
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
+    */
+
+    Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
     Route::get('plan-templates/view-created-templates', [PlanTemplatesController::class, 'viewCreatedTemplates'])->name('plan-templates.viewCreatedTemplates');
 

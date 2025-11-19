@@ -1,9 +1,7 @@
-// resources/js/Pages/Trainer/Availability/BulkCreate.jsx
 import React from 'react';
 import { Head, useForm, Link } from '@inertiajs/react';
 import { type BreadcrumbItem } from '@/types';
 import AppLayout from '@/layouts/app-layout';
-
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -19,6 +17,17 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: 'schedules/manage-slots/bulk-create-slot',
     },
 ];
+
+// Helper function to format time consistently
+const formatTime = (timeString) => {
+    if (!timeString) return '';
+    return new Date(`2000-01-01T${timeString}`).toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+        timeZone: 'UTC'
+    });
+};
 
 export default function AvailabilityBulkCreate({ trainer }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -125,11 +134,7 @@ export default function AvailabilityBulkCreate({ trainer }) {
                                         >
                                             {timeOptions.map(time => (
                                                 <option key={time} value={time}>
-                                                    {new Date(`2000-01-01T${time}`).toLocaleTimeString('en-US', {
-                                                        hour: 'numeric',
-                                                        minute: '2-digit',
-                                                        hour12: true
-                                                    })}
+                                                    {formatTime(time)}
                                                 </option>
                                             ))}
                                         </select>
@@ -146,11 +151,7 @@ export default function AvailabilityBulkCreate({ trainer }) {
                                         >
                                             {timeOptions.map(time => (
                                                 <option key={time} value={time}>
-                                                    {new Date(`2000-01-01T${time}`).toLocaleTimeString('en-US', {
-                                                        hour: 'numeric',
-                                                        minute: '2-digit',
-                                                        hour12: true
-                                                    })}
+                                                    {formatTime(time)}
                                                 </option>
                                             ))}
                                         </select>
@@ -190,7 +191,7 @@ export default function AvailabilityBulkCreate({ trainer }) {
                                             Creating slots from {new Date(data.start_date).toLocaleDateString()} to {new Date(data.end_date).toLocaleDateString()}
                                         </p>
                                         <p className="text-green-700">
-                                            Time: {data.start_time} - {data.end_time}
+                                            Time: {formatTime(data.start_time)} - {formatTime(data.end_time)}
                                         </p>
                                         <p className="text-green-700">
                                             Days: {data.days.map(day => dayOptions.find(d => d.value === day)?.label).join(', ')}

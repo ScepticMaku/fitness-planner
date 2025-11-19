@@ -15,14 +15,7 @@ function CalendarApp() {
 
     const calendar = useCalendarApp({
         views: [createViewDay(), createViewWeek(), createViewMonthGrid(), createViewMonthAgenda()],
-        events: [
-            {
-                id: '1',
-                title: 'Event 1',
-                start: Temporal.PlainDate.from('2025-11-16 09:00'),
-                end: Temporal.PlainDate.from('2025-11-17 11:00'),
-            },
-        ],
+        events: [],
         plugins: [eventsService]
     })
 

@@ -27,10 +27,56 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Dashboard() {
+export default function Dashboard({ dietGuideline, exercises, currentExercise, workoutStructure, workoutLogs, pendingAppointments, appointments }: any) {
 
     const { auth } = usePage().props as any;
     const userRole = auth.roles;
+
+    const appointmentRequests = pendingAppointments.length;
+    const exerciseList = exercises || [];
+
+    const completedExercises = exerciseList.filter(e => e.status == 'completed').length || 0;
+    const exerciseLength = exerciseList.length || 0;
+
+
+    function isTodayUTC(dateString: string): boolean {
+        const inputDate = new Date(dateString);
+        const today = new Date();
+
+        // Compare in UTC
+        return (
+            inputDate.getUTCDate() === today.getUTCDate() &&
+            inputDate.getUTCMonth() === today.getUTCMonth() &&
+            inputDate.getUTCFullYear() === today.getUTCFullYear()
+        );
+    }
+
+    function separateDateAndTimeUTC(dateString: string): { date: string; time: string } {
+        const date = new Date(dateString);
+
+        // Use UTC methods since the input has 'Z' (UTC timezone)
+        const year = date.getUTCFullYear();
+        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(date.getUTCDate()).padStart(2, '0');
+
+        const hours = String(date.getUTCHours()).padStart(2, '0');
+        const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+        const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+
+        return {
+            date: `${year}-${month}-${day}`,
+            time: `${hours}:${minutes}:${seconds}`
+        };
+    }
+
+    const nextAppointment = appointments.filter(a => isTodayUTC(a.slot.start_time))[0];
+
+    const nextAppointmentDateTime = separateDateAndTimeUTC(nextAppointment.slot.start_time);
+    const appointmentsTodayNumber = (appointments.filter(a => isTodayUTC(a.slot.start_time))).length;
+    const appointmentsToday = (appointments.filter(a => isTodayUTC(a.slot.start_time))).map(p => ({
+        ...p,
+        ...separateDateAndTimeUTC(p.slot.start_time)
+    }));
 
     if (userRole == 'trainer') {
         return (
@@ -41,19 +87,27 @@ export default function Dashboard() {
                         <Label className="text-[20px]"><strong>Overview</strong></Label>
                     </div>
                     <div className="flex flex-row gap-3 mb-4">
-                        <Item className="grid grid-flow-row w-60" variant="outline">
+                        <Item className="grid grid-flow-row w-90" variant="outline">
                             <ItemTitle><Clock />Appointments Today</ItemTitle>
-                            <Label className="text-[16px]">0</Label>
+                            <Label className="text-[16px]">{appointmentsTodayNumber}</Label>
                         </Item>
-                        <Item className="grid grid-flow-row w-60" variant="outline">
+                        <Item className="grid grid-flow-row w-90" variant="outline">
                             <ItemTitle><Loader />Appointment Requests</ItemTitle>
-                            <Label className="text-[16px]">0</Label>
+                            <Label className="text-[16px]">{appointmentRequests}</Label>
                         </Item>
-                        <Item className="grid grid-flow-row w-60" variant="outline">
-                            <ItemTitle><Clock4 />Next Appointment</ItemTitle>
-                            <Label className="text-[16px]">Time & Date - Exercise</Label>
-                            <ItemDescription>With: trainer name</ItemDescription>
-                        </Item>
+                        {nextAppointment != null && (
+                            <Item className="grid grid-flow-row w-90" variant="outline">
+                                <ItemTitle><Clock4 />Next Appointment</ItemTitle>
+                                <Label className="text-[16px]">{nextAppointmentDateTime.time} & {nextAppointmentDateTime.date} - {nextAppointment.exercise.name}</Label>
+                                <ItemDescription>With: {nextAppointment.user.name}</ItemDescription>
+                            </Item>
+                        )}
+                        {nextAppointment == null && (
+                            <Item className="grid grid-flow-row w-90" variant="outline">
+                                <ItemTitle><Clock4 />Next Appointment</ItemTitle>
+                                <Label className="text-[16px]">None</Label>
+                            </Item>
+                        )}
                     </div>
                     <div className="mb-2">
                     </div>
@@ -63,14 +117,34 @@ export default function Dashboard() {
                                 <ItemTitle><strong>Schedule</strong></ItemTitle>
                             </ItemHeader>
                             <ItemContent>
-                                <ScrollArea className="h-40">
-                                    <Item variant="outline">
-                                        <ItemHeader>
-                                            <Label>10:00AM - Client Name</Label>
-                                            <Button><Eye />View</Button>
-                                        </ItemHeader>
-                                    </Item>
-                                </ScrollArea>
+                                {appointmentsToday.length > 0 && (
+                                    <ScrollArea className="h-40">
+                                        {appointmentsToday.map(appointment => (
+                                            <Item variant="outline">
+                                                <ItemHeader>
+                                                    <div>
+                                                        <Label>{appointment.time} - {appointment.exercise.name}</Label>
+                                                        <ItemDescription>{appointment.user.name}</ItemDescription>
+                                                    </div>
+                                                    <Link href={route('appointments.show', appointment.id)}>
+                                                        <Button><Eye />View</Button>
+                                                    </Link>
+                                                </ItemHeader>
+                                            </Item>
+                                        ))}
+                                    </ScrollArea>
+                                )}
+                                {appointmentsToday.length == 0 && (
+                                    <ScrollArea className="h-40">
+                                        {appointmentsToday.map(appointment => (
+                                            <Item variant="outline">
+                                                <div>
+                                                    <Label>You currently have no appointments</Label>
+                                                </div>
+                                            </Item>
+                                        ))}
+                                    </ScrollArea>
+                                )}
                             </ItemContent>
                             <Link>
                             </Link>
@@ -82,15 +156,16 @@ export default function Dashboard() {
                             <ItemContent>
                                 <ScrollArea className="h-40">
                                     <div className="grid grid-flow-cols gap-3">
-                                        <Item variant="outline">
-                                            <ItemHeader>
-                                                <div>
-                                                    <Label>Client Name - Exercise</Label>
-                                                    <ItemDescription>Date Completed</ItemDescription>
-                                                </div>
-                                                <Button><Eye />View</Button>
-                                            </ItemHeader>
-                                        </Item>
+                                        {workoutLogs.map(log => (
+                                            <Item variant="outline">
+                                                <ItemHeader>
+                                                    <div>
+                                                        <Label>{log.user.name} - {log.exercise.name}</Label>
+                                                        <ItemDescription>Date Completed: {log.date_completed}</ItemDescription>
+                                                    </div>
+                                                </ItemHeader>
+                                            </Item>
+                                        ))}
                                     </div>
                                 </ScrollArea>
                             </ItemContent>
@@ -115,44 +190,71 @@ export default function Dashboard() {
                         </ItemHeader>
                     </Item>
                     <div className="mt-4 flex flex-row gap-3">
-                        <Item className="grid grid-flow-row w-60" variant="outline">
-                            <ItemTitle><Clock4 />Next Appointment</ItemTitle>
-                            <Label className="text-[16px]">Time & Date - Exercise</Label>
-                            <ItemDescription>With: trainer name</ItemDescription>
-                        </Item>
-                        <Item className="grid grid-flow-row w-60" variant="outline">
-                            <ItemTitle><Clock4 />Workout Progress</ItemTitle>
-                            <Label className="text-[16px]">Full Body A</Label>
-                            <ItemDescription>Completed: 0/4 Exercises</ItemDescription>
-                        </Item>
-
+                        {nextAppointment == null && (
+                            <Item className="grid grid-flow-row w-60" variant="outline">
+                                <ItemTitle><Clock4 />Next Appointment</ItemTitle>
+                                <Label className="text-[16px]">None</Label>
+                            </Item>
+                        )}
+                        {nextAppointment != null && (
+                            <Item className="grid grid-flow-row w-60" variant="outline">
+                                <ItemTitle><Clock4 />Next Appointment</ItemTitle>
+                                <Label className="text-[16px]">{nextAppointmentDateTime.time} & {nextAppointmentDateTime.date} - {nextAppointment.exercise.name}</Label>
+                                <ItemDescription>With: {nextAppointment.trainer.user.name}</ItemDescription>
+                            </Item>
+                        )}
+                        {workoutStructure != null && (
+                            <Item className="grid grid-flow-row w-60" variant="outline">
+                                <ItemTitle><Clock4 />Workout Progress</ItemTitle>
+                                <Label className="text-[16px]">{workoutStructure.name}</Label>
+                                <ItemDescription>Completed: {completedExercises}/{exerciseLength} Exercises</ItemDescription>
+                            </Item>
+                        )}
+                        {workoutStructure == null && (
+                            <Item className="grid grid-flow-row w-60" variant="outline">
+                                <ItemTitle><Clock4 />Workout Progress</ItemTitle>
+                                <Label className="text-[16px]">None</Label>
+                            </Item>
+                        )}
                     </div>
                     <div className="mt-4 grid grid-flow-col grid-cols-2 gap-3">
                         <div className="grid grid-flow-row gap-2">
-                            <Item variant="outline">
-                                <ItemHeader>
-                                    <div>
-                                        <ItemTitle>Current Exercise</ItemTitle>
-                                        <Label><strong>Exercise Name</strong></Label>
-                                    </div>
-                                </ItemHeader>
-                                <ItemContent>
-                                    <div className="grid grid-flow-col gap-3">
+                            {currentExercise != null && (
+                                <Item variant="outline">
+                                    <ItemHeader>
                                         <div>
-                                            <Label className="mr-2">Sets:</Label>
-                                            <Badge>3</Badge>
+                                            <ItemTitle>Current Exercise</ItemTitle>
+                                            <Label><strong>{currentExercise.name}</strong></Label>
                                         </div>
+                                    </ItemHeader>
+                                    <ItemContent>
+                                        <div className="grid grid-flow-col gap-3">
+                                            <div>
+                                                <Label className="mr-2">Sets:</Label>
+                                                <Badge>{currentExercise.sets}</Badge>
+                                            </div>
+                                            <div>
+                                                <Label className="mr-2">Reps:</Label>
+                                                <Badge>{currentExercise.reps}</Badge>
+                                            </div>
+                                            <div>
+                                                <Label className="mr-2">Rest Seconds:</Label>
+                                                <Badge>{currentExercise.rest_seconds}</Badge>
+                                            </div>
+                                        </div>
+                                    </ItemContent>
+                                </Item>
+                            )}
+                            {currentExercise == null && (
+                                <Item variant="outline">
+                                    <ItemHeader>
                                         <div>
-                                            <Label className="mr-2">Reps:</Label>
-                                            <Badge>8-10</Badge>
+                                            <ItemTitle>Current Exercise</ItemTitle>
+                                            <Label><strong>None</strong></Label>
                                         </div>
-                                        <div>
-                                            <Label className="mr-2">Rest Seconds:</Label>
-                                            <Badge>75</Badge>
-                                        </div>
-                                    </div>
-                                </ItemContent>
-                            </Item>
+                                    </ItemHeader>
+                                </Item>
+                            )}
                             <div>
                                 <Item variant="outline">
                                     <ItemHeader>
@@ -161,15 +263,17 @@ export default function Dashboard() {
                                     <ItemContent>
                                         <ScrollArea className="h-40">
                                             <div className="grid grid-flow-cols gap-3">
-                                                <Item variant="outline">
-                                                    <ItemHeader>
-                                                        <div>
-                                                            <Label>Client Name - Exercise</Label>
-                                                            <ItemDescription>Date Completed</ItemDescription>
-                                                        </div>
-                                                        <Button><Eye />View</Button>
-                                                    </ItemHeader>
-                                                </Item>
+                                                {workoutLogs.map(log => (
+                                                    <Item variant="outline">
+                                                        <ItemHeader>
+                                                            <div>
+                                                                <Label>{log.trainer.user.name} - {log.exercise.name}</Label>
+                                                                <ItemDescription>{log.date_completed}</ItemDescription>
+                                                            </div>
+                                                            <Button><Eye />View</Button>
+                                                        </ItemHeader>
+                                                    </Item>
+                                                ))}
                                             </div>
                                         </ScrollArea>
                                     </ItemContent>
@@ -182,39 +286,75 @@ export default function Dashboard() {
                                     <ItemTitle><strong>Schedule</strong></ItemTitle>
                                 </ItemHeader>
                                 <ItemContent>
-                                    <ScrollArea className="h-40">
-                                        <Item variant="outline">
-                                            <ItemHeader>
-                                                <Label>10:00AM - Client Name</Label>
-                                                <Button><Eye />View</Button>
-                                            </ItemHeader>
-                                        </Item>
-                                    </ScrollArea>
+                                    {appointmentsToday.length > 0 && (
+                                        <ScrollArea className="h-40">
+                                            {appointmentsToday.map(appointment => (
+                                                <Item variant="outline">
+                                                    <ItemHeader>
+                                                        <div>
+                                                            <Label>{appointment.time} - {appointment.exercise.name}</Label>
+                                                            <ItemDescription>With: {appointment.trainer.user.name}</ItemDescription>
+                                                        </div>
+                                                        <Button><Eye />View</Button>
+                                                    </ItemHeader>
+                                                </Item>
+                                            ))}
+                                        </ScrollArea>
+                                    )}
+                                    {appointmentsToday.length == 0 && (
+                                        <ScrollArea className="h-40">
+                                            {appointmentsToday.map(appointment => (
+                                                <Item variant="outline">
+                                                    <ItemHeader>
+                                                        <div>
+                                                            <Label>You currently have no appointments</Label>
+                                                        </div>
+                                                    </ItemHeader>
+                                                </Item>
+                                            ))}
+                                        </ScrollArea>
+                                    )}
                                 </ItemContent>
                                 <Link>
                                 </Link>
                             </Item>
-                            <Item variant="outline">
-                                <div className="space-y-4">
-                                    <div>
-                                        <ItemTitle className="text-[20px]"><strong>Diet Guidelines</strong></ItemTitle>
+                            {dietGuideline != null && (
+                                <Item variant="outline">
+                                    <div className="space-y-4">
+                                        <div>
+                                            <ItemTitle className="text-[20px]"><strong>Diet Guidelines</strong></ItemTitle>
+                                        </div>
+                                        <div className="space-y-3">
+                                            <div>
+                                                <ItemTitle><strong>Name</strong></ItemTitle>
+                                                <Label>{dietGuideline.name}</Label>
+                                            </div>
+                                            <div>
+                                                <ItemTitle><strong>Description</strong></ItemTitle>
+                                                <p>{dietGuideline.description}</p>
+                                            </div>
+                                            <div>
+                                                <ItemTitle><strong>Diet Type</strong></ItemTitle>
+                                                <Label>{dietGuideline.diet_type}</Label>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="space-y-3">
+                                </Item>
+                            )}
+                            {dietGuideline == null && (
+                                <Item variant="outline">
+                                    <div className="space-y-4">
                                         <div>
-                                            <ItemTitle><strong>Name</strong></ItemTitle>
-                                            <Label>Guideline Name</Label>
+                                            <ItemTitle className="text-[20px]"><strong>Diet Guidelines</strong></ItemTitle>
                                         </div>
-                                        <div>
-                                            <ItemTitle><strong>Description</strong></ItemTitle>
-                                            <p>Guideline Description</p>
-                                        </div>
-                                        <div>
-                                            <ItemTitle><strong>Diet Type</strong></ItemTitle>
-                                            <Label>Diet Type</Label>
+                                        <div className="space-y-3">
+                                            <div>
+                                                <Label>You currently have no plan</Label>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </Item>
+                                </Item>
+                            )}
                         </div>
                     </div>
                 </div>
