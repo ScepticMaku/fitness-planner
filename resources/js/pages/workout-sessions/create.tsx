@@ -4,7 +4,6 @@ import { Head, useForm, router } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 
-
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Workout Progress',
@@ -29,6 +28,20 @@ export default function CreateSession({ trainers, currentExercise }: any) {
         exercise_id: currentExercise.id,
         exercise_details: currentExercise
     });
+
+    // Fix: Create a consistent date formatting function
+    const formatDateToLocalString = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+    // Fix: Get today's date without time component for comparison
+    const getToday = () => {
+        const now = new Date();
+        return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    };
 
     // Fetch available slots when trainer or date changes
     useEffect(() => {
@@ -68,7 +81,7 @@ export default function CreateSession({ trainers, currentExercise }: any) {
         setData('slot_id', slot.id);
     };
 
-    // Simple calendar generation
+    // Fixed calendar generation
     const generateCalendarDays = () => {
         const year = currentMonth.getFullYear();
         const month = currentMonth.getMonth();
@@ -78,6 +91,7 @@ export default function CreateSession({ trainers, currentExercise }: any) {
         const daysInMonth = lastDay.getDate();
 
         const days = [];
+        const today = getToday();
 
         // Add empty cells for days before the first day of the month
         for (let i = 0; i < firstDay.getDay(); i++) {
@@ -87,16 +101,17 @@ export default function CreateSession({ trainers, currentExercise }: any) {
         // Add days of the month
         for (let day = 1; day <= daysInMonth; day++) {
             const date = new Date(year, month, day);
-            const dateString = date.toISOString().split('T')[0];
+            const dateString = formatDateToLocalString(date);
             const isSelected = selectedDate === dateString;
-            const isToday = date.toDateString() === new Date().toDateString();
+            const isToday = formatDateToLocalString(today) === dateString;
+            const isPast = date < today;
 
             days.push({
                 date: dateString,
                 day,
                 isSelected,
                 isToday,
-                isPast: date < new Date().setHours(0, 0, 0, 0)
+                isPast
             });
         }
 

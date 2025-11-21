@@ -81,7 +81,8 @@ export default function Index({ appointmentSchedule = [] }: { appointmentSchedul
             weekday: 'long',
             year: 'numeric',
             month: 'long',
-            day: 'numeric'
+            day: 'numeric',
+            timeZone: 'UTC',
         });
     };
 
@@ -614,7 +615,7 @@ function MemberAppointmentCard({ appointment, isUpcoming }: { appointment: Appoi
 
 // Helper functions
 function formatTime(dateString: string): string {
-    return new Date(dateString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return new Date(dateString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
 }
 
 function formatDate(dateString: string): string {
@@ -622,13 +623,15 @@ function formatDate(dateString: string): string {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
-        day: 'numeric'
+        day: 'numeric',
+        timeZone: 'UTC'
     });
 }
 
 function formatDateShort(dateString: string): string {
     return new Date(dateString).toLocaleDateString('en-US', {
         month: 'short',
-        day: 'numeric'
+        day: 'numeric',
+        timeZone: 'UTC',
     });
 }

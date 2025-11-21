@@ -29,6 +29,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Dashboard({ dietGuideline, exercises, currentExercise, workoutStructure, workoutLogs, pendingAppointments, appointments, userAppointments, trainerAppointments }: any) {
 
+    console.log(workoutLogs);
+
     const { auth } = usePage().props as any;
     const userRole = auth.roles;
     const userId = auth.user.id;
@@ -37,7 +39,6 @@ export default function Dashboard({ dietGuideline, exercises, currentExercise, w
 
     const completedExercises = exerciseList.filter(e => e.status == 'completed').length || 0;
     const exerciseLength = exerciseList.length || 0;
-
 
     function isTodayUTC(dateString: string): boolean {
         const inputDate = new Date(dateString);
@@ -54,14 +55,14 @@ export default function Dashboard({ dietGuideline, exercises, currentExercise, w
     function separateDateAndTimeUTC(dateString: string): { date: string; time: string } {
         const date = new Date(dateString);
 
-        // Use UTC methods since the input has 'Z' (UTC timezone)
-        const year = date.getUTCFullYear();
-        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-        const day = String(date.getUTCDate()).padStart(2, '0');
+        // Use local methods to convert UTC to local time
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
 
-        const hours = String(date.getUTCHours()).padStart(2, '0');
-        const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-        const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
 
         return {
             date: `${year}-${month}-${day}`,
@@ -78,14 +79,14 @@ export default function Dashboard({ dietGuideline, exercises, currentExercise, w
     }));
 
     const nextUserAppointment = userAppointments.filter(a => isTodayUTC(a.slot.start_time)).length > 0 ? userAppointments.filter(a => isTodayUTC(a.slot.start_time))[0] : null;
-    const nextUserAppointmentDateTime = (nextAppointment != null) ? separateDateAndTimeUTC(nextAppointment.slot.start_time) : null;
+    const nextUserAppointmentDateTime = (nextUserAppointment != null) ? separateDateAndTimeUTC(nextUserAppointment.slot.start_time) : null;
     const userAppointmentsTodayNumber = (userAppointments.filter(a => isTodayUTC(a.slot.start_time))).length;
     const userAppointmentsToday = (userAppointments.filter(a => isTodayUTC(a.slot.start_time))).map(p => ({
         ...p,
         ...separateDateAndTimeUTC(p.slot.start_time)
     }));
 
-    console.log(userAppointmentsToday);
+    console.log(nextUserAppointment);
 
     if (userRole == 'trainer') {
         return (
@@ -205,16 +206,16 @@ export default function Dashboard({ dietGuideline, exercises, currentExercise, w
                 <Head title="Dashboard" />
                 <div className="m-4">
                     <div className="mt-4 flex flex-row gap-3">
-                        {nextAppointment == null && (
+                        {nextUserAppointment == null && (
                             <Item className="grid grid-flow-row w-60" variant="outline">
                                 <ItemTitle><Clock4 />Next Appointment</ItemTitle>
                                 <Label className="text-[16px]">None</Label>
                             </Item>
                         )}
-                        {nextAppointment != null && (
+                        {nextUserAppointment != null && (
                             <Item className="grid grid-flow-row w-60" variant="outline">
                                 <ItemTitle><Clock4 />Next Appointment</ItemTitle>
-                                <Label className="text-[16px]">{nextUserAppointmentDateTime.time} & {nextUserAppointmentDateTime.date} - {nextAppointment.exercise.name}</Label>
+                                <Label className="text-[16px]">{nextUserAppointmentDateTime.time} & {nextUserAppointmentDateTime.date} - {nextUserAppointment.exercise.name}</Label>
                                 <ItemDescription>With: {nextUserAppointment.trainer.user.name}</ItemDescription>
                             </Item>
                         )}

@@ -25,9 +25,10 @@ class DashboardController extends Controller
         if($appointments) {
             if($trainer) {
                 $trainerId = $trainer->id;
-                $workoutLogs = WorkoutLog::with('workoutProgress', 'exercise', 'user')->where('trainer_id', $trainerId)->limit(5)->get();
-                $trainerAppointments = $appointments->where('trainer_id', $trainerId);
+                $workoutLogs = WorkoutLog::with('workoutProgress', 'exercise', 'user')->where('trainer_id', $trainerId)->orderBy('id', 'desc')->limit(5)->get();
+                $trainerAppointments = Appointment::with('slot', 'user', 'trainer.user', 'exercise')->where('status', 'approved')->where('trainer_id', $trainerId)->get();
                 $pendingAppointments = Appointment::with('slot', 'user', 'trainer', 'exercise')->where('status', 'pending')->where('trainer_id', $trainerId)->get();
+
                 return Inertia::render('dashboard', [
                     'trainerAppointments' => $trainerAppointments,
                     'appointments' => $appointments,
@@ -100,7 +101,7 @@ class DashboardController extends Controller
             'progress' => [],
             'appointments' => $appointments,
             'userAppointments' => [],
-            'pendingAppointments' => $pendingAppointments,
+            'pendingAppointments' => [],
             'workoutLogs' => [],
             'currentExercise' => [],
             'workoutStucture' => [],
