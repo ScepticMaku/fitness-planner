@@ -21,7 +21,10 @@ class AppointmentsController extends Controller
      */
     public function index()
     {
-        $appointments = Appointment::with('user', 'slot', 'trainer', 'exercise')->get();
+        $userId = Auth::user()->id;
+        $trainer = Trainer::with('user')->where('user_id', $userId)->first();
+        $trainerId = $trainer->id;
+        $appointments = Appointment::with('user', 'slot', 'trainer', 'exercise')->where('trainer_id', $trainerId)->get();
 
         return Inertia::render('appointments/index', [
             'appointments' => $appointments
