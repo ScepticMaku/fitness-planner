@@ -70,7 +70,7 @@ export default function Dashboard({ dietGuideline, exercises, currentExercise, w
         };
     }
 
-    const nextAppointment = trainerAppointments.filter(a => isTodayUTC(a.slot.start_time)).length > 0 ? trainerAppointments.filter(a => isTodayUTC(a.slot.start_time))[0] : null;
+    const nextAppointment = trainerAppointments.length > 0 ? trainerAppointments[0] : null;
     const nextAppointmentDateTime = (nextAppointment != null) ? separateDateAndTimeUTC(nextAppointment.slot.start_time) : null;
     const appointmentsTodayNumber = (trainerAppointments.filter(a => isTodayUTC(a.slot.start_time))).length;
     const appointmentsToday = (trainerAppointments.filter(a => isTodayUTC(a.slot.start_time))).map(p => ({
@@ -78,7 +78,7 @@ export default function Dashboard({ dietGuideline, exercises, currentExercise, w
         ...separateDateAndTimeUTC(p.slot.start_time)
     }));
 
-    const nextUserAppointment = userAppointments.filter(a => isTodayUTC(a.slot.start_time)).length > 0 ? userAppointments.filter(a => isTodayUTC(a.slot.start_time))[0] : null;
+    const nextUserAppointment = userAppointments.length > 0 ? userAppointments[0] : null;
     const nextUserAppointmentDateTime = (nextUserAppointment != null) ? separateDateAndTimeUTC(nextUserAppointment.slot.start_time) : null;
     const userAppointmentsTodayNumber = (userAppointments.filter(a => isTodayUTC(a.slot.start_time))).length;
     const userAppointmentsToday = (userAppointments.filter(a => isTodayUTC(a.slot.start_time))).map(p => ({
@@ -147,7 +147,7 @@ export default function Dashboard({ dietGuideline, exercises, currentExercise, w
                                 {appointmentsToday.length == 0 && (
                                     <ScrollArea className="h-40">
                                         <div>
-                                            <ItemDescription>You currently have no appointments</ItemDescription>
+                                            <ItemDescription>You currently have no appointments today</ItemDescription>
                                         </div>
                                     </ScrollArea>
                                 )}
@@ -329,7 +329,7 @@ export default function Dashboard({ dietGuideline, exercises, currentExercise, w
                                     {userAppointmentsToday.length == 0 && (
                                         <ScrollArea className="h-40">
                                             <div>
-                                                <ItemDescription>You currently have no appointments</ItemDescription>
+                                                <ItemDescription>You currently have no appointments today</ItemDescription>
                                             </div>
                                         </ScrollArea>
                                     )}
