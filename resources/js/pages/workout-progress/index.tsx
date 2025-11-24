@@ -36,10 +36,11 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Index({ allExercises, progress, appointments, plans, currentExercise, workoutLog, exercises, workoutStructure, dietGuideline }: any) {
+export default function Index({ trainer, allExercises, progress, appointments, plans, currentExercise, workoutLog, exercises, workoutStructure, dietGuideline }: any) {
+
+    const trainerId = trainer.id;
 
     const appointmentsList = appointments || [];
-
     const appointmentExercises = appointmentsList.filter(a => a.exercise_id == currentExercise.id);
     const hasApprovedRequest = appointmentExercises.filter(a => a.status == 'approved');
 
@@ -59,11 +60,7 @@ export default function Index({ allExercises, progress, appointments, plans, cur
     const [searchValue, setSearchValue] = useState('');
     const [showList, setShowList] = useState(true);
 
-    console.log(progress);
-
-    const clients = appointments.filter(appointment => appointment.status == 'approved');
-
-    console.log(plan);
+    const clients = appointments.filter(appointment => appointment.status == 'approved' && appointment.trainer_id == trainerId);
 
     const handleInputChange = (e) => {
         const value = e.target.value;

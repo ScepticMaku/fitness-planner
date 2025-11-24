@@ -25,7 +25,6 @@ const formatTime = (timeString) => {
         hour: 'numeric',
         minute: '2-digit',
         hour12: true,
-        timeZone: 'UTC'
     });
 };
 

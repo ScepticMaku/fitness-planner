@@ -25,7 +25,7 @@ class WorkoutProgressController extends Controller
     {
         $userId = Auth::user()->id;
         $plans = UserHasPlan::with('user')->get();
-        $progress = WorkoutProgress::where('user_id', $userId)->where('status', 'in-progress')->first();
+        $progress = WorkoutProgress::where('user_id', $userId)->first();
         $exercises = ExerciseProgress::with('exercise')->get();
         $allExercises = Exercise::get();
         $appointments = Appointment::with('user')->where('user_id', $userId)->get();
@@ -51,12 +51,27 @@ class WorkoutProgressController extends Controller
                 'dietGuideline' => $dietGuidelineId,
                 'appointments' => $appointments,
                 'allExercises' => [],
-                'progress' => $progress
+                'progress' => $progress,
+                'trainer' => [],
             ]);
         }
 
         $appointments = Appointment::with('user')->get();
+        $trainer = Trainer::with('user')->where('user_id', $userId)->first();
 
+        if($trainer) {
+            return Inertia::render('workout-progress/index', [
+                'plans' => $plans,
+                'currentExercise' => [],
+                'workoutLog' => [],
+                'exercises' => $exercises,
+                'workoutStructure' => [],
+                'allExercises' => $allExercises,
+                'dietGuideline' => [],
+                'appointments' => $appointments,
+                'trainer' => $trainer,
+            ]);
+        }
         return Inertia::render('workout-progress/index', [
             'plans' => $plans,
             'currentExercise' => [],
@@ -66,7 +81,7 @@ class WorkoutProgressController extends Controller
             'allExercises' => $allExercises,
             'dietGuideline' => [],
             'appointments' => $appointments,
-            'progress' => []
+            'trainer' => [],
         ]);
     }
 
